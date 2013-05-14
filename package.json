@@ -1,0 +1,24 @@
+{
+  "name": "karma-spec-reporter",
+  "version": "0.0.1",
+  "description": "A Karma plugin. Report all spec-results to console (like mocha's spec reporter).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mlex/karma-spec-reporter.git"
+  },
+  "keywords": [
+    "karma-plugin",
+    "reporter"
+  ],
+  "author": "Michael Lex <michael.lex@codecentric.de>",
+  "dependencies": {
+  },
+  "peerDependencies": {
+    "karma": "~0.9"
+  },
+  "license": "MIT"
+}
