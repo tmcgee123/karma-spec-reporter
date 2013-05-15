@@ -3,6 +3,19 @@ require('colors');
 var SpecReporter = function(baseReporterDecorator, formatError) {
   baseReporterDecorator(this);
 
+  // colorize output of BaseReporter functions
+  this.USE_COLORS = true;
+  this.SPEC_FAILURE = '%s %s FAILED'.red + '\n';
+  this.SPEC_SLOW = '%s SLOW %s: %s'.yellow + '\n';
+  this.ERROR = '%s ERROR'.red + '\n';
+  this.FINISHED_ERROR = ' ERROR'.red;
+  this.FINISHED_SUCCESS = ' SUCCESS'.green;
+  this.FINISHED_DISCONNECTED = ' DISCONNECTED'.red;
+  this.X_FAILED = ' (%d FAILED)'.red;
+  this.TOTAL_SUCCESS = 'TOTAL: %d SUCCESS'.green + '\n';
+  this.TOTAL_FAILED = 'TOTAL: %d FAILED, %d SUCCESS'.red + '\n';
+
+
   this.onRunStart = function(browsers) {
     browsers.forEach(function(browser) {
       // useful properties
@@ -13,7 +26,7 @@ var SpecReporter = function(baseReporterDecorator, formatError) {
 
   this.onBrowserComplete = function(browser) {
     // useful properties
-    browser.lastResult;
+    var result = browser.lastResult;
     result.total;
     result.disconnected;
     result.error;
@@ -21,7 +34,19 @@ var SpecReporter = function(baseReporterDecorator, formatError) {
     result.netTime; // in millieseconds? or microseconds?
   };
 
-  this.onRunComplete = function() {
+  this.onRunComplete = function(browsers, results) {
+    // the renderBrowser function is defined in karma/reporters/Base.js
+    this.writeCommonMsg(browsers.map(this.renderBrowser).join('\n') + '\n');
+
+    if (browsers.length > 1 && !results.disconnected && !results.error) {
+      if (!results.failed) {
+        this.write(this.TOTAL_SUCCESS, results.success);
+      } else {
+        this.write(this.TOTAL_FAILED, results.failed, results.success);
+      }
+    }
+
+    this.write("\n");
   };
 
   this.currentSuite = [];
