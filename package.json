@@ -16,6 +16,7 @@
   ],
   "author": "Michael Lex <michael.lex@codecentric.de>",
   "dependencies": {
+    "colors":"~0.6.0"
   },
   "peerDependencies": {
     "karma": "~0.9"

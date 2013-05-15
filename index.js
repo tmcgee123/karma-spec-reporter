@@ -1,27 +1,19 @@
-var util = require('util');
+require('colors');
 
 var SpecReporter = function(baseReporterDecorator, formatError) {
   baseReporterDecorator(this);
-  
-  // Here we could override the output-adapter
-  // The default adapter (stdout) is defined in karma/reporters/Base.js
-  //this.adapters = [
-  //  function(msg) {
-  //    process.stdout.write(msg);
-  //  }
-  //];
 
   this.onRunStart = function(browsers) {
     browsers.forEach(function(browser) {
-      var browserId = browser.id;
-      var browserName = browser.fullName;
+      // useful properties
+      browser.id;
+      browser.fullName;
     });
   };
 
   this.onBrowserComplete = function(browser) {
-    var result = browser.lastResult;
-
-    // available properties
+    // useful properties
+    browser.lastResult;
     result.total;
     result.disconnected;
     result.error;
@@ -32,42 +24,54 @@ var SpecReporter = function(baseReporterDecorator, formatError) {
   this.onRunComplete = function() {
   };
 
-  this.specSuccess = function(browser, result) {
-    var specName = result.suite.join(' ') + ' ' + result.description;
-    var msg = util.format('%s %s PASSED'.green, browser, specName);
+  this.currentSuite = [];
+  this.writeSpecMessage = function(status) {
+    return (function(browser, result) {
+      var suite = result.suite
+      var indent = "";
+      suite.forEach(
+        // beware, this in the context of a foreach loop is not what you expect!
+        // To be sure, we bind this explicitly
+        (function(value, index) {
+          if (index >= this.currentSuite.length || this.currentSuite[index] != value) {
+            if (index == 0) {
+              this.writeCommonMsg('\n');
+            }
+            this.writeCommonMsg(indent + value + ':\n');
+            this.currentSuite = [];
+          }
+          indent += "    ";
+        }).bind(this)
+      );
+      this.currentSuite = suite;
 
-    result.log.forEach(function(log) {
-      msg += formatError(log, '\t');
-    });
+      var specName = result.description;
+      //TODO: add timing information
+      var msg = '  '  + indent + status + " - " + specName, specName
 
-    this.writeCommonMsg(msg);
+      result.log.forEach(function(log) {
+        // TODO: have to find out, what this line exactly does. just copied it from karma's BaseReporter
+        msg += formatError(log, '\t');
+      });
 
-    browser.id;
-    browser.fullName;
-    
-    result.suite;
-    result.description;
-    result.time;
+      this.writeCommonMsg(msg + '\n');
 
-    result.skipped;
-    result.success;
+      // other useful properties
+      browser.id;
+      browser.fullName;
+      result.time;
+      result.skipped;
+      result.success;
+    }).bind(this);
   };
 
-  this.specSkipped = function(browser, result) {
-    var specName = result.suite.join(' ') + ' ' + result.description;
-    var msg = util.format('%s %s SKIPPED'.gray, browser, specName);
-
-    result.log.forEach(function(log) {
-      msg += formatError(log, '\t');
-    });
-
-    this.writeCommonMsg(msg);
-  };
+  this.specSuccess = this.writeSpecMessage('PASSED '.green);
+  this.specSkipped = this.writeSpecMessage('SKIPPED'.gray);
+  this.specFailure = this.writeSpecMessage('FAILED '.red);
 };
 
 SpecReporter.$inject = ['baseReporterDecorator', 'logger', 'formatError'];
 
-// PUBLISH DI MODULE
 module.exports = {
   'reporter:spec': ['type', SpecReporter]
 };
