@@ -1,6 +1,6 @@
 require('colors');
 
-var SpecReporter = function(baseReporterDecorator, formatError) {
+var SpecReporter = function(baseReporterDecorator, logger, formatError) {
   baseReporterDecorator(this);
 
   // colorize output of BaseReporter functions
@@ -51,6 +51,7 @@ var SpecReporter = function(baseReporterDecorator, formatError) {
 
   this.currentSuite = [];
   this.writeSpecMessage = function(status) {
+    debugger;
     return (function(browser, result) {
       var suite = result.suite
       var indent = "";
