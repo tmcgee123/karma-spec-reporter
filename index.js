@@ -51,7 +51,6 @@ var SpecReporter = function(baseReporterDecorator, logger, formatError) {
 
   this.currentSuite = [];
   this.writeSpecMessage = function(status) {
-    debugger;
     return (function(browser, result) {
       var suite = result.suite
       var indent = "";
