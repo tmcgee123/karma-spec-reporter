@@ -74,11 +74,6 @@ var SpecReporter = function(baseReporterDecorator, logger, formatError) {
       //TODO: add timing information
       var msg = '  '  + indent + status + " - " + specName, specName
 
-      result.log.forEach(function(log) {
-        // TODO: have to find out, what this line exactly does. just copied it from karma's BaseReporter
-        msg += formatError(log, '\t');
-      });
-
       this.writeCommonMsg(msg + '\n');
 
       // other useful properties
