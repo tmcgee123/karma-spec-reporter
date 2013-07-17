@@ -1,6 +1,6 @@
 require('colors');
 
-var SpecReporter = function(baseReporterDecorator, logger, formatError) {
+var SpecReporter = function(baseReporterDecorator, formatError) {
   baseReporterDecorator(this);
 
   // colorize output of BaseReporter functions
