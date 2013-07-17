@@ -95,7 +95,7 @@ var SpecReporter = function(baseReporterDecorator, logger, formatError) {
   this.specFailure = this.writeSpecMessage('FAILED '.red);
 };
 
-SpecReporter.$inject = ['baseReporterDecorator', 'logger', 'formatError'];
+SpecReporter.$inject = ['baseReporterDecorator', 'formatError'];
 
 module.exports = {
   'reporter:spec': ['type', SpecReporter]
