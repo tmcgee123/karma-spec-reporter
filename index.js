@@ -90,7 +90,7 @@ var SpecReporter = function(baseReporterDecorator, formatError) {
   };
 
   this.specSuccess = this.writeSpecMessage('PASSED '.green);
-  this.specSkipped = this.writeSpecMessage('SKIPPED'.gray);
+  this.specSkipped = this.writeSpecMessage('SKIPPED'.grey);
   this.specFailure = this.writeSpecMessage('FAILED '.red);
 };
 
