@@ -17,6 +17,7 @@ var SpecReporter = function(baseReporterDecorator, formatError) {
 
 
   this.onRunStart = function(browsers) {
+	this._browsers = [];
     browsers.forEach(function(browser) {
       // useful properties
       browser.id;
