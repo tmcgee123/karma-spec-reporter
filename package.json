@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/mlex/karma-spec-reporter.git"
+    "url": "git://github.com/brijsrivastava/karma-spec-reporter"
   },
   "keywords": [
     "karma-plugin",
