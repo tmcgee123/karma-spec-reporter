@@ -15,25 +15,6 @@ var SpecReporter = function(baseReporterDecorator, formatError) {
   this.TOTAL_SUCCESS = 'TOTAL: %d SUCCESS'.green + '\n';
   this.TOTAL_FAILED = 'TOTAL: %d FAILED, %d SUCCESS'.red + '\n';
 
-
-  this.onRunStart = function(browsers) {
-    browsers.forEach(function(browser) {
-      // useful properties
-      browser.id;
-      browser.fullName;
-    });
-  };
-
-  this.onBrowserComplete = function(browser) {
-    // useful properties
-    var result = browser.lastResult;
-    result.total;
-    result.disconnected;
-    result.error;
-    result.failed;
-    result.netTime; // in millieseconds? or microseconds?
-  };
-
   this.onRunComplete = function(browsers, results) {
     // the renderBrowser function is defined in karma/reporters/Base.js
     this.writeCommonMsg(browsers.map(this.renderBrowser).join('\n') + '\n');
