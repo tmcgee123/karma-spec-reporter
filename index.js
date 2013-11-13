@@ -34,7 +34,7 @@ var SpecReporter = function(baseReporterDecorator, formatError) {
   this.writeSpecMessage = function(status) {
     return (function(browser, result) {
       var suite = result.suite
-      var indent = "";
+      var indent = "  ";
       suite.forEach(
         // beware, this in the context of a foreach loop is not what you expect!
         // To be sure, we bind this explicitly
@@ -43,17 +43,17 @@ var SpecReporter = function(baseReporterDecorator, formatError) {
             if (index == 0) {
               this.writeCommonMsg('\n');
             }
-            this.writeCommonMsg(indent + value + ':\n');
+            this.writeCommonMsg(indent + value + '\n');
             this.currentSuite = [];
           }
-          indent += "    ";
+          indent += "  ";
         }).bind(this)
       );
       this.currentSuite = suite;
 
       var specName = result.description;
       //TODO: add timing information
-      var msg = '  '  + indent + status + " - " + specName, specName
+      var msg = indent + status + specName, specName
 
       result.log.forEach(function(log) {
         msg += formatError(log, '\t');
@@ -70,9 +70,9 @@ var SpecReporter = function(baseReporterDecorator, formatError) {
     }).bind(this);
   };
 
-  this.specSuccess = this.writeSpecMessage('PASSED '.green);
-  this.specSkipped = this.writeSpecMessage('SKIPPED'.grey);
-  this.specFailure = this.writeSpecMessage('FAILED '.red);
+  this.specSuccess = this.writeSpecMessage('✓ '.green);
+  this.specSkipped = this.writeSpecMessage('- '.grey);
+  this.specFailure = this.writeSpecMessage('✗ '.red);
 };
 
 SpecReporter.$inject = ['baseReporterDecorator', 'formatError'];
