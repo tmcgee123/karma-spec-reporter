@@ -17,7 +17,7 @@ var SpecReporter = function(baseReporterDecorator, formatError) {
 
   this.onRunComplete = function(browsers, results) {
     // the renderBrowser function is defined in karma/reporters/Base.js
-    this.writeCommonMsg(browsers.map(this.renderBrowser).join('\n') + '\n');
+    this.writeCommonMsg('\n' + browsers.map(this.renderBrowser).join('\n') + '\n');
 
     if (browsers.length > 1 && !results.disconnected && !results.error) {
       if (!results.failed) {
