@@ -1,7 +1,11 @@
-require('colors');
+var colors = require('colors');
 
-var SpecReporter = function(baseReporterDecorator, formatError) {
+var SpecReporter = function(baseReporterDecorator, formatError, config) {
   baseReporterDecorator(this);
+
+  if (!config.colors) {
+    colors.mode = 'none';
+  }
 
   // colorize output of BaseReporter functions
   this.USE_COLORS = true;
@@ -75,7 +79,7 @@ var SpecReporter = function(baseReporterDecorator, formatError) {
   this.specFailure = this.writeSpecMessage('✗ '.red);
 };
 
-SpecReporter.$inject = ['baseReporterDecorator', 'formatError'];
+SpecReporter.$inject = ['baseReporterDecorator', 'formatError', 'config'];
 
 module.exports = {
   'reporter:spec': ['type', SpecReporter]
