@@ -1,23 +1,23 @@
-var colors = require('colors');
+require('colors');
 
 var SpecReporter = function(baseReporterDecorator, formatError, config) {
   baseReporterDecorator(this);
 
-  if (!config.colors) {
-    colors.mode = 'none';
-  }
-
   // colorize output of BaseReporter functions
-  this.USE_COLORS = true;
-  this.SPEC_FAILURE = '%s %s FAILED'.red + '\n';
-  this.SPEC_SLOW = '%s SLOW %s: %s'.yellow + '\n';
-  this.ERROR = '%s ERROR'.red + '\n';
-  this.FINISHED_ERROR = ' ERROR'.red;
-  this.FINISHED_SUCCESS = ' SUCCESS'.green;
-  this.FINISHED_DISCONNECTED = ' DISCONNECTED'.red;
-  this.X_FAILED = ' (%d FAILED)'.red;
-  this.TOTAL_SUCCESS = 'TOTAL: %d SUCCESS'.green + '\n';
-  this.TOTAL_FAILED = 'TOTAL: %d FAILED, %d SUCCESS'.red + '\n';
+  if (config.colors) {
+    this.USE_COLORS = true;
+    this.SPEC_FAILURE = '%s %s FAILED'.red + '\n';
+    this.SPEC_SLOW = '%s SLOW %s: %s'.yellow + '\n';
+    this.ERROR = '%s ERROR'.red + '\n';
+    this.FINISHED_ERROR = ' ERROR'.red;
+    this.FINISHED_SUCCESS = ' SUCCESS'.green;
+    this.FINISHED_DISCONNECTED = ' DISCONNECTED'.red;
+    this.X_FAILED = ' (%d FAILED)'.red;
+    this.TOTAL_SUCCESS = 'TOTAL: %d SUCCESS'.green + '\n';
+    this.TOTAL_FAILED = 'TOTAL: %d FAILED, %d SUCCESS'.red + '\n';
+  } else {
+    this.USE_COLORS = false;
+  }
 
   this.onRunComplete = function(browsers, results) {
     // the renderBrowser function is defined in karma/reporters/Base.js
@@ -74,9 +74,9 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
     }).bind(this);
   };
 
-  this.specSuccess = this.writeSpecMessage('✓ '.green);
-  this.specSkipped = this.writeSpecMessage('- '.grey);
-  this.specFailure = this.writeSpecMessage('✗ '.red);
+  this.specSuccess = this.writeSpecMessage(this.USE_COLORS ? '✓ '.green : '✓ ');
+  this.specSkipped = this.writeSpecMessage(this.USE_COLORS ? '- '.grey : '- ');
+  this.specFailure = this.writeSpecMessage(this.USE_COLORS ? '✗ '.red : '✗ ');
 };
 
 SpecReporter.$inject = ['baseReporterDecorator', 'formatError', 'config'];
