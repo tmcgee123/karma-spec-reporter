@@ -74,6 +74,17 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
     }).bind(this);
   };
 
+  this.LOG_SINGLE_BROWSER = '%s LOG: %s\n';
+  this.LOG_MULTI_BROWSER = '%s %s LOG: %s\n';
+  this.onBrowserLog = function(browser, log, type) {
+    if (this._browsers && this._browsers.length === 1) {
+      this.write(this.LOG_SINGLE_BROWSER, type.toUpperCase(), log);
+    } else {
+      this.write(this.LOG_MULTI_BROWSER, browser, type.toUpperCase(), log);
+    }
+  };
+
+
   this.specSuccess = this.writeSpecMessage(this.USE_COLORS ? '✓ '.green : '✓ ');
   this.specSkipped = this.writeSpecMessage(this.USE_COLORS ? '- '.grey : '- ');
   this.specFailure = this.writeSpecMessage(this.USE_COLORS ? '✗ '.red : '✗ ');
