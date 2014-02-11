@@ -83,11 +83,13 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       this.write(this.LOG_MULTI_BROWSER, browser, type.toUpperCase(), log);
     }
   };
+  
+  function noop(){}
 
-
-  this.specSuccess = this.writeSpecMessage(this.USE_COLORS ? '✓ '.green : '✓ ');
-  this.specSkipped = this.writeSpecMessage(this.USE_COLORS ? '- '.grey : '- ');
-  this.specFailure = this.writeSpecMessage(this.USE_COLORS ? '✗ '.red : '✗ ');
+  var reporterCfg = config.specReporter || {};
+  this.specSuccess = reporterCfg.suppressPassed ? noop : this.writeSpecMessage(this.USE_COLORS ? '✓ '.green : '✓ ');
+  this.specSkipped = reporterCfg.suppressSkipped ? noop : this.writeSpecMessage(this.USE_COLORS ? '- '.grey : '- ');
+  this.specFailure = reporterCfg.suppressFailed ? noop : this.writeSpecMessage(this.USE_COLORS ? '✗ '.red : '✗ ');
 };
 
 SpecReporter.$inject = ['baseReporterDecorator', 'formatError', 'config'];
