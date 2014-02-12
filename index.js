@@ -40,14 +40,14 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       var suite = result.suite
       var indent = "  ";
       suite.forEach(function(value, index) {
-          if (index >= this.currentSuite.length || this.currentSuite[index] != value) {
-            if (index == 0) {
-              this.writeCommonMsg('\n');
-            }
-            this.writeCommonMsg(indent + value + '\n');
-            this.currentSuite = [];
+        if (index >= this.currentSuite.length || this.currentSuite[index] != value) {
+          if (index == 0) {
+            this.writeCommonMsg('\n');
           }
-          indent += "  ";
+          this.writeCommonMsg(indent + value + '\n');
+          this.currentSuite = [];
+        }
+        indent += "  ";
       }, this);
       this.currentSuite = suite;
 
