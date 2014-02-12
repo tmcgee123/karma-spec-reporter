@@ -39,10 +39,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
     return (function(browser, result) {
       var suite = result.suite
       var indent = "  ";
-      suite.forEach(
-        // beware, this in the context of a foreach loop is not what you expect!
-        // To be sure, we bind this explicitly
-        (function(value, index) {
+      suite.forEach(function(value, index) {
           if (index >= this.currentSuite.length || this.currentSuite[index] != value) {
             if (index == 0) {
               this.writeCommonMsg('\n');
@@ -51,8 +48,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
             this.currentSuite = [];
           }
           indent += "  ";
-        }).bind(this)
-      );
+      }, this);
       this.currentSuite = suite;
 
       var specName = result.description;
