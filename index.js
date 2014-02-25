@@ -57,7 +57,15 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
 
       var specName = result.description;
       //TODO: add timing information
-      var msg = indent + status + specName, specName
+
+      debugger;
+      if(this.USE_COLORS) {
+        if(result.skipped) specName = specName.cyan;
+        if(result.success) specName = specName.green;
+        if(result.failed) specName = specName.red;
+      }
+
+      var msg = indent + status + specName;
 
       result.log.forEach(function(log) {
         msg += formatError(log, '\t');
