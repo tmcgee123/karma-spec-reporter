@@ -60,8 +60,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
 
       if(this.USE_COLORS) {
         if(result.skipped) specName = specName.cyan;
-        if(result.success) specName = specName.green;
-        if(result.failed) specName = specName.red;
+        else if(!result.success) specName = specName.red;
       }
 
       var msg = indent + status + specName;
