@@ -58,7 +58,6 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       var specName = result.description;
       //TODO: add timing information
 
-      debugger;
       if(this.USE_COLORS) {
         if(result.skipped) specName = specName.cyan;
         if(result.success) specName = specName.green;
@@ -94,7 +93,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
 
 
   this.specSuccess = this.writeSpecMessage(this.USE_COLORS ? '✓ '.green : '✓ ');
-  this.specSkipped = this.writeSpecMessage(this.USE_COLORS ? '- '.grey : '- ');
+  this.specSkipped = this.writeSpecMessage(this.USE_COLORS ? '- '.cyan : '- ');
   this.specFailure = this.writeSpecMessage(this.USE_COLORS ? '✗ '.red : '✗ ');
 };
 
