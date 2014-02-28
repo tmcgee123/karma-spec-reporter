@@ -39,20 +39,16 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
     return (function(browser, result) {
       var suite = result.suite
       var indent = "  ";
-      suite.forEach(
-        // beware, this in the context of a foreach loop is not what you expect!
-        // To be sure, we bind this explicitly
-        (function(value, index) {
-          if (index >= this.currentSuite.length || this.currentSuite[index] != value) {
-            if (index == 0) {
-              this.writeCommonMsg('\n');
-            }
-            this.writeCommonMsg(indent + value + '\n');
-            this.currentSuite = [];
+      suite.forEach(function(value, index) {
+        if (index >= this.currentSuite.length || this.currentSuite[index] != value) {
+          if (index == 0) {
+            this.writeCommonMsg('\n');
           }
-          indent += "  ";
-        }).bind(this)
-      );
+          this.writeCommonMsg(indent + value + '\n');
+          this.currentSuite = [];
+        }
+        indent += "  ";
+      }, this);
       this.currentSuite = suite;
 
       var specName = result.description;
