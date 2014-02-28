@@ -78,9 +78,9 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
   this.LOG_MULTI_BROWSER = '%s %s LOG: %s\n';
   this.onBrowserLog = function(browser, log, type) {
     if (this._browsers && this._browsers.length === 1) {
-      this.write(this.LOG_SINGLE_BROWSER, type.toUpperCase(), log);
+      this.write(this.LOG_SINGLE_BROWSER, type.toUpperCase(), this.USE_COLORS ? log.cyan : log);
     } else {
-      this.write(this.LOG_MULTI_BROWSER, browser, type.toUpperCase(), log);
+      this.write(this.LOG_MULTI_BROWSER, browser, type.toUpperCase(), this.USE_COLORS ? log.cyan : log);
     }
   };
 
