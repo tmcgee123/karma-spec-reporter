@@ -62,7 +62,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       var msg = indent + status + specName;
 
       result.log.forEach(function(log) {
-        msg += formatError(log, '\t');
+        msg += '\n' + formatError(log, '\t');
       });
 
       this.writeCommonMsg(msg + '\n');
