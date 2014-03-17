@@ -53,7 +53,13 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
 
       var specName = result.description;
       //TODO: add timing information
-      var msg = indent + status + specName, specName
+
+      if(this.USE_COLORS) {
+        if(result.skipped) specName = specName.cyan;
+        else if(!result.success) specName = specName.red;
+      }
+
+      var msg = indent + status + specName;
 
       result.log.forEach(function(log) {
         msg += formatError(log, '\t');
@@ -84,7 +90,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
 
   var reporterCfg = config.specReporter || {};
   this.specSuccess = reporterCfg.suppressPassed ? noop : this.writeSpecMessage(this.USE_COLORS ? '✓ '.green : '✓ ');
-  this.specSkipped = reporterCfg.suppressSkipped ? noop : this.writeSpecMessage(this.USE_COLORS ? '- '.grey : '- ');
+  this.specSkipped = reporterCfg.suppressSkipped ? noop : this.writeSpecMessage(this.USE_COLORS ? '- '.cyan : '- ');
   this.specFailure = reporterCfg.suppressFailed ? noop : this.writeSpecMessage(this.USE_COLORS ? '✗ '.red : '✗ ');
 };
 
