@@ -90,9 +90,15 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
   function noop(){}
 
   var reporterCfg = config.specReporter || {};
-  this.specSuccess = reporterCfg.suppressPassed ? noop : this.writeSpecMessage(this.USE_COLORS ? '✓ '.green : '✓ ');
-  this.specSkipped = reporterCfg.suppressSkipped ? noop : this.writeSpecMessage(this.USE_COLORS ? '- '.cyan : '- ');
-  this.specFailure = reporterCfg.suppressFailed ? noop : this.writeSpecMessage(this.USE_COLORS ? '✗ '.red : '✗ ');
+  var prefixes = config.specReporter.prefixes || {
+    success: '✓ ',
+    failure: '✗ ',
+    skipped: '- '
+  };
+
+  this.specSuccess = reporterCfg.suppressPassed ? noop : this.writeSpecMessage(this.USE_COLORS ? prefixes.success.green : prefixes.success);
+  this.specSkipped = reporterCfg.suppressSkipped ? noop : this.writeSpecMessage(this.USE_COLORS ? prefixes.skipped.cyan : prefixes.skipped);
+  this.specFailure = reporterCfg.suppressFailed ? noop : this.writeSpecMessage(this.USE_COLORS ? prefixes.failure.red : prefixes.failure);
 };
 
 SpecReporter.$inject = ['baseReporterDecorator', 'formatError', 'config'];
