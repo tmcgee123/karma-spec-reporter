@@ -93,7 +93,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
   function noop(){}
 
   var reporterCfg = config.specReporter || {};
-  var prefixes = config.specReporter.prefixes || {
+  var prefixes = reporterCfg.prefixes || {
     success: '✓ ',
     failure: '✗ ',
     skipped: '- '
