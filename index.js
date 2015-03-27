@@ -106,14 +106,19 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
     }
   };
 
+  var reporterCfg = config.specReporter || {};
+  var prefixes = reporterCfg.prefixes || {
+      success: '✓ ',
+      failure: '✗ ',
+      skipped: '- '
+  };
+
+  function noop(){}
   this.onSpecFailure = function(browsers, results) {
     this.failures.push(results);
     this.writeSpecMessage(this.USE_COLORS ? prefixes.failure.red : prefixes.failure).apply(this, arguments);
   };
 
-  function noop(){}
-
-  var reporterCfg = config.specReporter || {};
   this.specSuccess = reporterCfg.suppressPassed ? noop : this.writeSpecMessage(this.USE_COLORS ? prefixes.success.green : prefixes.success);
   this.specSkipped = reporterCfg.suppressSkipped ? noop : this.writeSpecMessage(this.USE_COLORS ? prefixes.skipped.cyan : prefixes.skipped);
   this.specFailure = reporterCfg.suppressFailed ? noop : this.onSpecFailure;
