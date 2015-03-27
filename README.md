@@ -4,7 +4,7 @@ Test reporter, that prints detailed results to console (similar to mocha's spec 
 
 ## Usage
 
-To use in your own nodejs project, just execute
+To use in your own Node.js project, just execute
 ```
 npm install karma-spec-reporter --save-dev
 ```
