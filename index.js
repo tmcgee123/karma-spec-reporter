@@ -35,6 +35,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
     }
 
     this.write("\n");
+    this.failures = [];
   };
 
   this.logFinalErrors = function(errors) {
