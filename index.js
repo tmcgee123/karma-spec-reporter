@@ -45,14 +45,18 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
     errors.forEach(function(failure, index) {
       index = index + 1;
 
-      this.writeCommonMsg((index + ') ' + failure.description + '\n').red) ;
+      if (index > 1) {
+        this.writeCommonMsg('\n');
+      }
+
+      this.writeCommonMsg((index + ') ' + failure.description + '\n').red);
       this.writeCommonMsg((this.WHITESPACE + failure.suite.join(' ') + '\n').red);
       failure.log.forEach(function(log) {
         this.writeCommonMsg(this.WHITESPACE + log.replace(/\\n/g, '\n').grey);
       }, this);
     }, this);
 
-    this.writeCommonMsg('\n\n') ;
+    this.writeCommonMsg('\n') ;
   };
 
   this.currentSuite = [];
