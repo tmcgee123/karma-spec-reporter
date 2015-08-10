@@ -52,7 +52,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       this.writeCommonMsg((index + ') ' + failure.description + '\n').red);
       this.writeCommonMsg((this.WHITESPACE + failure.suite.join(' ') + '\n').red);
       failure.log.forEach(function(log) {
-        this.writeCommonMsg(this.WHITESPACE + log.replace(/\\n/g, '\n').grey);
+        this.writeCommonMsg(this.WHITESPACE + formatError(log).replace(/\\n/g, '\n').grey);
       }, this);
     }, this);
 
