@@ -20,7 +20,7 @@ Take a look at the [karma-spec-reporter-example](http://github.com/mlex/karma-sp
 
 ## Configuration
 
-To limit the number of lines logged per test 
+To limit the number of lines logged per test
 ``` js
 //karma.conf.js
 ...
@@ -31,5 +31,16 @@ To limit the number of lines logged per test
       plugins: ["karma-spec-reporter"],
     ...
 ```
+### Disabling the error summary
 
-
+To disable the logging of the final errors at the end of the specs being ran
+``` js
+//karma.conf.js
+...
+  config.set({
+    ...
+      reporters: ["spec"],
+      specReporter: {showErrorSummary: false}, //defaults to true
+      plugins: ["karma-spec-reporter"],
+    ...
+```
