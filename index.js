@@ -30,7 +30,9 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
         this.write(this.TOTAL_SUCCESS, results.success);
       } else {
         this.write(this.TOTAL_FAILED, results.failed, results.success);
-        this.logFinalErrors(this.failures);
+        if (this.SHOW_ERROR_SUMMARY) {
+          this.logFinalErrors(this.failures);
+        }
       }
     }
 
@@ -117,6 +119,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       failure: '✗ ',
       skipped: '- '
   };
+  this.SHOW_ERROR_SUMMARY = reporterCfg.showErrorSummary || true;
 
   function noop(){}
   this.onSpecFailure = function(browsers, results) {
