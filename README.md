@@ -27,7 +27,12 @@ To limit the number of lines logged per test
   config.set({
     ...
       reporters: ["spec"],
-      specReporter: {maxLogLines: 5},
+      specReporter: {
+        maxLogLines: 5         // limit number of lines logged per test
+        suppressPassed: false  // do not print information about passed tests
+        suppressFailed: false  // do not print information about failed tests
+        suppressSkipped: true  // do not print information about skipped tests
+      },
       plugins: ["karma-spec-reporter"],
     ...
 ```
