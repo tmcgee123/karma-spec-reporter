@@ -89,6 +89,9 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       var msg = indent + status + specName;
 
       result.log.forEach(function(log) {
+        if (reporterCfg.maxLogLines) {
+          log = log.split('\n').slice(0, reporterCfg.maxLogLines).join('\n');
+        }
         msg += '\n' + formatError(log, '\t');
       });
 
