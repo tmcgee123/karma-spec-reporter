@@ -30,7 +30,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
         this.write(this.TOTAL_SUCCESS, results.success);
       } else {
         this.write(this.TOTAL_FAILED, results.failed, results.success);
-        if (this.SHOW_ERROR_SUMMARY) {
+        if (!this.specErrorSummary) {
           this.logFinalErrors(this.failures);
         }
       }
@@ -122,7 +122,6 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       failure: '✗ ',
       skipped: '- '
   };
-  this.SHOW_ERROR_SUMMARY = reporterCfg.showErrorSummary || true;
 
   function noop(){}
   this.onSpecFailure = function(browsers, results) {
@@ -133,6 +132,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
   this.specSuccess = reporterCfg.suppressPassed ? noop : this.writeSpecMessage(this.USE_COLORS ? prefixes.success.green : prefixes.success);
   this.specSkipped = reporterCfg.suppressSkipped ? noop : this.writeSpecMessage(this.USE_COLORS ? prefixes.skipped.cyan : prefixes.skipped);
   this.specFailure = reporterCfg.suppressFailed ? noop : this.onSpecFailure;
+  this.specErrorSummary = reporterCfg.suppressErrorSummary || false;
 };
 
 SpecReporter.$inject = ['baseReporterDecorator', 'formatError', 'config'];

@@ -45,7 +45,7 @@ To disable the logging of the final errors at the end of the specs being ran
   config.set({
     ...
       reporters: ["spec"],
-      specReporter: {showErrorSummary: false}, //defaults to true
+      specReporter: {suppressErrorSummary: true}, //defaults to false
       plugins: ["karma-spec-reporter"],
     ...
 ```
