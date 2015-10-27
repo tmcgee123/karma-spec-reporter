@@ -10,7 +10,7 @@ npm install karma-spec-reporter --save-dev
 ```
 This will download the karma-spec-reporter and add the dependency to `package.json`.
 
-Then add 'spec' to reporters in karma.conf.js, e.g.
+Then add ``'spec'`` to reporters in karma.conf.js, e.g.
 
 ```
 reporters: ['spec']
@@ -20,7 +20,8 @@ Take a look at the [karma-spec-reporter-example](http://github.com/mlex/karma-sp
 
 ## Configuration
 
-To limit the number of lines logged per test
+To limit the number of lines logged per test or suppress specific reporting, use the `specReporter` configuration in your
+karma.conf.js file
 ``` js
 //karma.conf.js
 ...
@@ -28,24 +29,12 @@ To limit the number of lines logged per test
     ...
       reporters: ["spec"],
       specReporter: {
-        maxLogLines: 5         // limit number of lines logged per test
-        suppressPassed: false  // do not print information about passed tests
-        suppressFailed: false  // do not print information about failed tests
+        maxLogLines: 5,         // limit number of lines logged per test
+        suppressErrorSummary: true,  // do not print error summary
+        suppressFailed: false,  // do not print information about failed tests
+        suppressPassed: false,  // do not print information about passed tests
         suppressSkipped: true  // do not print information about skipped tests
       },
-      plugins: ["karma-spec-reporter"],
-    ...
-```
-### Disabling the error summary
-
-To disable the logging of the final errors at the end of the specs being ran
-``` js
-//karma.conf.js
-...
-  config.set({
-    ...
-      reporters: ["spec"],
-      specReporter: {suppressErrorSummary: true}, //defaults to false
       plugins: ["karma-spec-reporter"],
     ...
 ```
