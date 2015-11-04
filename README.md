@@ -40,3 +40,13 @@ karma.conf.js file
       plugins: ["karma-spec-reporter"],
     ...
 ```
+
+## Contributing
+
+### Running tests
+
+To run the tests for the index.js file, run: `npm test`
+
+### Generating Coverage
+
+To see the coverage report for the module, run: `npm run coverage`
