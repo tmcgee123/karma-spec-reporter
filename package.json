@@ -4,7 +4,8 @@
   "description": "A Karma plugin. Report all spec-results to console (like mocha's spec reporter).",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha --reporter spec",
+    "coverage": "./node_modules/.bin/istanbul cover -x 'test/**/*.js' ./node_modules/.bin/mocha-runner 'test/**/*.js' html text-summary"
   },
   "repository": {
     "type": "git",
@@ -16,10 +17,15 @@
   ],
   "author": "Michael Lex <michael.lex@codecentric.de>",
   "dependencies": {
-    "colors":"~0.6.0"
+    "colors": "~0.6.0"
   },
   "peerDependencies": {
     "karma": ">=0.9"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.4.0",
+    "istanbul": "^0.4.0",
+    "mocha-runner": "^1.1.1"
+  }
 }
