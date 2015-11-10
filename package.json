@@ -4,7 +4,7 @@
   "description": "A Karma plugin. Report all spec-results to console (like mocha's spec reporter).",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec",
+    "test": "./node_modules/.bin/mocha-runner --reporter spec 'test/**/*.spec.js'",
     "coverage": "./node_modules/.bin/istanbul cover -x 'test/**/*.js' ./node_modules/.bin/mocha-runner 'test/**/*.js' html text-summary"
   },
   "repository": {
