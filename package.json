@@ -27,5 +27,8 @@
     "chai": "^3.4.0",
     "istanbul": "^0.4.0",
     "mocha-runner": "^1.1.1"
-  }
+  },
+  "files": [
+    "index.js"
+  ]
 }
