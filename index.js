@@ -38,6 +38,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
 
     this.write("\n");
     this.failures = [];
+    this.currentSuite = [];
   };
 
   this.logFinalErrors = function(errors) {
