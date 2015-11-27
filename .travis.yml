@@ -1,2 +1,4 @@
 language: node_js
 sudo: false
+script: "npm run-script coverage"
+after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
