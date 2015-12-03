@@ -4,6 +4,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
   baseReporterDecorator(this);
 
   this.failures = [];
+  this.USE_COLORS = false;
 
   // colorize output of BaseReporter functions
   if (config.colors) {
@@ -17,12 +18,10 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
     this.X_FAILED = ' (%d FAILED)'.red;
     this.TOTAL_SUCCESS = 'TOTAL: %d SUCCESS'.green + '\n';
     this.TOTAL_FAILED = 'TOTAL: %d FAILED, %d SUCCESS'.red + '\n';
-  } else {
-    this.USE_COLORS = false;
   }
 
   this.onRunComplete = function(browsers, results) {
-    // the renderBrowser function is defined in karma/reporters/Base.js
+    //NOTE: the renderBrowser function is defined in karma/reporters/Base.js
     this.writeCommonMsg('\n' + browsers.map(this.renderBrowser).join('\n') + '\n');
 
     if (browsers.length >= 1 && !results.disconnected && !results.error) {
@@ -36,7 +35,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       }
     }
 
-    this.write("\n");
+    this.write('\n');
     this.failures = [];
     this.currentSuite = [];
   };
@@ -98,12 +97,12 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
 
       this.writeCommonMsg(msg + '\n');
 
-      // other useful properties
-      browser.id;
-      browser.fullName;
-      result.time;
-      result.skipped;
-      result.success;
+      // NOTE: other useful properties
+      // browser.id;
+      // browser.fullName;
+      // result.time;
+      // result.skipped;
+      // result.success;
     }).bind(this);
   };
 

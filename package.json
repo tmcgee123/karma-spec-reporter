@@ -27,7 +27,9 @@
     "chai": "^3.4.0",
     "coveralls": "^2.11.4",
     "istanbul": "^0.4.0",
-    "mocha-runner": "^1.1.1"
+    "mocha-runner": "^1.1.1",
+    "sinon": "^1.17.2",
+    "sinon-chai": "^2.8.0"
   },
   "files": [
     "index.js"
