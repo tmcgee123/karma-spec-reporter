@@ -54,6 +54,9 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       this.writeCommonMsg((index + ') ' + failure.description + '\n').red);
       this.writeCommonMsg((this.WHITESPACE + failure.suite.join(' ') + '\n').red);
       failure.log.forEach(function(log) {
+        if (reporterCfg.maxLogLines) {
+          log = log.split('\n').slice(0, reporterCfg.maxLogLines).join('\n');
+        } 
         this.writeCommonMsg(this.WHITESPACE + formatError(log).replace(/\\n/g, '\n').grey);
       }, this);
     }, this);
