@@ -56,7 +56,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       failure.log.forEach(function(log) {
         if (reporterCfg.maxLogLines) {
           log = log.split('\n').slice(0, reporterCfg.maxLogLines).join('\n');
-        } 
+        }
         this.writeCommonMsg(this.WHITESPACE + formatError(log).replace(/\\n/g, '\n').grey);
       }, this);
     }, this);
@@ -69,12 +69,16 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
     return (function(browser, result) {
       var suite = result.suite;
       var indent = "  ";
+      var browserName = browser.name.split(' (')[0];
+      if (this.USE_COLORS) {
+        browserName = browserName.cyan;
+      }
       suite.forEach(function(value, index) {
         if (index >= this.currentSuite.length || this.currentSuite[index] != value) {
           if (index === 0) {
             this.writeCommonMsg('\n');
           }
-          this.writeCommonMsg(indent + value + '\n');
+          this.writeCommonMsg(indent + value + (' ' + browserName) + '\n');
           this.currentSuite = [];
         }
         indent += "  ";
