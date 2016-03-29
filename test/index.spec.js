@@ -1,3 +1,5 @@
+/* global beforeEach, it, describe */
+
 'use strict';
 var chai = require('chai');
 var sinon = require('sinon');
@@ -76,6 +78,7 @@ describe('SpecReporter', function () {
         newSpecReporter.TOTAL_FAILED.should.equal(ansiColors.red + 'TOTAL: %d FAILED, %d SUCCESS' + ansiColors.reset + '\n');
       });
     });
+
     describe('and there are configurations set for the spec reporter', function () {
       describe('and suppressFailed is truthy', function () {
         var newSpecReporter;
@@ -91,6 +94,7 @@ describe('SpecReporter', function () {
           expect(newSpecReporter.specFailure()).to.equal();
         });
       });
+
       describe('and suppressSkipped is truthy', function () {
         var newSpecReporter;
         var config = {};
@@ -105,6 +109,7 @@ describe('SpecReporter', function () {
           expect(newSpecReporter.specSkipped()).to.equal();
         });
       });
+
       describe('and suppressPassed is truthy', function () {
         var newSpecReporter;
         var config = {};
@@ -119,6 +124,7 @@ describe('SpecReporter', function () {
           expect(newSpecReporter.specSuccess()).to.equal();
         });
       });
+
       describe('and suppressErrorSummary is truthy', function () {
         var newSpecReporter;
         var config = {};
@@ -133,8 +139,24 @@ describe('SpecReporter', function () {
           newSpecReporter.suppressErrorSummary.should.equal(true);
         });
       });
+
+      describe('and showSpecTiming is truthy', function () {
+        var newSpecReporter;
+        var config = {};
+        beforeEach(function () {
+          config.specReporter = {
+            showSpecTiming: true,
+          };
+          newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+        });
+
+        it('should set the showSpecTiming flag to true', function () {
+          newSpecReporter.showSpecTiming.should.equal(true);
+        });
+      });
     });
   });
+
   describe('functionality', function () {
     describe('onRunComplete', function () {
       describe('with no browsers', function () {
@@ -152,13 +174,16 @@ describe('SpecReporter', function () {
           newSpecReporter.currentSuite.length.should.equal(0);
           newSpecReporter.failures.length.should.equal(0);
         });
+
         it('should call writeCommonMsg', function () {
           newSpecReporter.writeCommonMsg.should.have.been.called;
         });
+
         it('should call write', function () {
           newSpecReporter.write.should.have.been.called;
         });
       });
+
       describe('with browsers', function () {
         describe('and there are no failures', function () {
           var newSpecReporter;
@@ -178,10 +203,12 @@ describe('SpecReporter', function () {
           it('should call to write all of the successful specs', function () {
             newSpecReporter.write.should.have.been.calledWith(undefined, 10);
           });
+
           it('should reset failures and currentSuite arrays', function () {
             newSpecReporter.currentSuite.length.should.equal(0);
             newSpecReporter.failures.length.should.equal(0);
           });
+
           it('should call writeCommonMsg', function () {
             newSpecReporter.writeCommonMsg.should.have.been.called;
           });
@@ -210,17 +237,21 @@ describe('SpecReporter', function () {
             it('should call to write all of the failed and successful specs', function () {
               newSpecReporter.write.should.have.been.calledWith(undefined, 10, 0);
             });
+
             it('should reset failures and currentSuite arrays', function () {
               newSpecReporter.currentSuite.length.should.equal(0);
               newSpecReporter.failures.length.should.equal(0);
             });
+
             it('should call writeCommonMsg', function () {
               newSpecReporter.writeCommonMsg.should.have.been.called;
             });
+
             it('should not call to log the final errors', function () {
               newSpecReporter.logFinalErrors.should.not.have.been.called;
             });
           });
+
           describe('and suppressErrorSummary is false', function () {
             var newSpecReporter;
             var config = {};
@@ -239,13 +270,16 @@ describe('SpecReporter', function () {
             it('should call to write all of the failed and successful specs', function () {
               newSpecReporter.write.should.have.been.calledWith(undefined, 10, 0);
             });
+
             it('should reset failures and currentSuite arrays', function () {
               newSpecReporter.currentSuite.length.should.equal(0);
               newSpecReporter.failures.length.should.equal(0);
             });
+
             it('should call writeCommonMsg', function () {
               newSpecReporter.writeCommonMsg.should.have.been.called;
             });
+
             it('should call to log the final errors', function () {
               newSpecReporter.logFinalErrors.should.have.been.called;
             });

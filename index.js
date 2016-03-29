@@ -3,6 +3,13 @@ require('colors');
 var SpecReporter = function(baseReporterDecorator, formatError, config) {
   baseReporterDecorator(this);
 
+  var reporterCfg = config.specReporter || {};
+  var prefixes = reporterCfg.prefixes || {
+    success: '✓ ',
+    failure: '✗ ',
+    skipped: '- ',
+  };
+
   this.failures = [];
   this.USE_COLORS = false;
 
@@ -74,22 +81,25 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
           if (index === 0) {
             this.writeCommonMsg('\n');
           }
+
           this.writeCommonMsg(indent + value + '\n');
           this.currentSuite = [];
         }
-        indent += "  ";
+
+        indent += '  ';
       }, this);
+
       this.currentSuite = suite;
 
       var specName = result.description;
-      //TODO: add timing information
+      var elapsedTime = reporterCfg.showSpecTiming ? ' (' + result.time + 'ms)' : '';
 
       if(this.USE_COLORS) {
         if(result.skipped) specName = specName.cyan;
         else if(!result.success) specName = specName.red;
       }
 
-      var msg = indent + status + specName;
+      var msg = indent + status + specName + elapsedTime;
 
       result.log.forEach(function(log) {
         if (reporterCfg.maxLogLines) {
@@ -103,9 +113,6 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       // NOTE: other useful properties
       // browser.id;
       // browser.fullName;
-      // result.time;
-      // result.skipped;
-      // result.success;
     }).bind(this);
   };
 
@@ -119,12 +126,6 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
     }
   };
 
-  var reporterCfg = config.specReporter || {};
-  var prefixes = reporterCfg.prefixes || {
-      success: '✓ ',
-      failure: '✗ ',
-      skipped: '- '
-  };
 
   function noop(){}
   this.onSpecFailure = function(browsers, results) {
@@ -136,6 +137,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
   this.specSkipped = reporterCfg.suppressSkipped ? noop : this.writeSpecMessage(this.USE_COLORS ? prefixes.skipped.cyan : prefixes.skipped);
   this.specFailure = reporterCfg.suppressFailed ? noop : this.onSpecFailure;
   this.suppressErrorSummary = reporterCfg.suppressErrorSummary || false;
+  this.showSpecTiming = reporterCfg.showSpecTiming || false;
 };
 
 SpecReporter.$inject = ['baseReporterDecorator', 'formatError', 'config'];
