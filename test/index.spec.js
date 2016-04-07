@@ -1,14 +1,46 @@
 /* global beforeEach, it, describe */
 
 'use strict';
+/*
+ * Based upon "Function.prototype.bind polyfill for PhantomJS"
+ *  author: Tom Watson <tom.james.watson@gmail.com>
+ *  homepage: https://github.com/tom-james-watson/phantomjs-polyfill
+ *
+ *  This fixes a compatibility issue with running Phantom1 with Angular 1.5
+ */
+
+/* jshint ignore:start */
+
+// if (typeof Function.prototype.bind != 'function') {
+//   Function.prototype.bind = function bind(obj) {
+//     var args = Array.prototype.slice.call(arguments, 1),
+//       self = this,
+//       nop = function() {
+//       },
+//       bound = function() {
+//         return self.apply(
+//           this instanceof nop ? this : (obj || {}), args.concat(
+//             Array.prototype.slice.call(arguments)
+//           )
+//         );
+//       };
+//     nop.prototype = this.prototype || {};
+//     bound.prototype = new nop();
+//     return bound;
+//   };
+// }
+
+/* jshint ignore:end */
+
+var rewire = require('rewire');
 var chai = require('chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 var should = chai.should();
 var expect = chai.expect;
-
-var SpecReporter = require('../index')['reporter:spec'];
+var reporterRewire = rewire('../index.js');
+var SpecReporter = require('../index.js')['reporter:spec'];
 
 var ansiColors = {
   red: '\u001b[31m',
@@ -16,6 +48,11 @@ var ansiColors = {
   green: '\u001b[32m',
   reset: '\u001b[39m'
 };
+var windowsIcons = {
+  success: '\u221A',
+  failure: '\u00D7',
+  skipped: '.'
+}
 
 //baseReporterDecorator functions
 var formatError = function (a, b) {
@@ -30,6 +67,31 @@ var baseReporterDecorator = function (context) {
 
 describe('SpecReporter', function () {
   describe('when initializing', function () {
+    describe('and on a windows machine', function () {
+      var newSpecReporter;
+      var config = {};
+
+      beforeEach(function () {
+        var processMock = {
+          platform: function () {
+            return 'win32';
+          }
+        };
+        reporterRewire.__set__({
+          'reporter:spec': SpecReporter,
+          process: {
+            platform: 'win32'
+          }
+        });
+        newSpecReporter = new reporterRewire['reporter:spec'][1](baseReporterDecorator, formatError, config);
+      });
+
+      it('SpecReporter should have icons defined appropriately', function () {
+        newSpecReporter.prefixes.success.should.equal(windowsIcons.success);
+        newSpecReporter.prefixes.failure.should.equal(windowsIcons.failure);
+        newSpecReporter.prefixes.skipped.should.equal(windowsIcons.skipped);
+      });
+    });
     describe('and colors are not defined', function () {
       var newSpecReporter;
       var config = {};
