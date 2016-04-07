@@ -4,11 +4,17 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
   baseReporterDecorator(this);
 
   var reporterCfg = config.specReporter || {};
-  var prefixes = reporterCfg.prefixes || {
+  this.prefixes = reporterCfg.prefixes || {
     success: '✓ ',
     failure: '✗ ',
     skipped: '- ',
   };
+
+  if (process && process.platform === 'win32') {
+    this.prefixes.success = '\u221A';
+    this.prefixes.failure = '\u00D7';
+    this.prefixes.skipped = '.';
+  }
 
   this.failures = [];
   this.USE_COLORS = false;
@@ -63,7 +69,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       failure.log.forEach(function(log) {
         if (reporterCfg.maxLogLines) {
           log = log.split('\n').slice(0, reporterCfg.maxLogLines).join('\n');
-        } 
+        }
         this.writeCommonMsg(this.WHITESPACE + formatError(log).replace(/\\n/g, '\n').grey);
       }, this);
     }, this);
@@ -130,11 +136,11 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
   function noop(){}
   this.onSpecFailure = function(browsers, results) {
     this.failures.push(results);
-    this.writeSpecMessage(this.USE_COLORS ? prefixes.failure.red : prefixes.failure).apply(this, arguments);
+    this.writeSpecMessage(this.USE_COLORS ? this.prefixes.failure.red : this.prefixes.failure).apply(this, arguments);
   };
 
-  this.specSuccess = reporterCfg.suppressPassed ? noop : this.writeSpecMessage(this.USE_COLORS ? prefixes.success.green : prefixes.success);
-  this.specSkipped = reporterCfg.suppressSkipped ? noop : this.writeSpecMessage(this.USE_COLORS ? prefixes.skipped.cyan : prefixes.skipped);
+  this.specSuccess = reporterCfg.suppressPassed ? noop : this.writeSpecMessage(this.USE_COLORS ? this.prefixes.success.green : this.prefixes.success);
+  this.specSkipped = reporterCfg.suppressSkipped ? noop : this.writeSpecMessage(this.USE_COLORS ? this.prefixes.skipped.cyan : this.prefixes.skipped);
   this.specFailure = reporterCfg.suppressFailed ? noop : this.onSpecFailure;
   this.suppressErrorSummary = reporterCfg.suppressErrorSummary || false;
   this.showSpecTiming = reporterCfg.showSpecTiming || false;
