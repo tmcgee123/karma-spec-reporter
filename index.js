@@ -3,18 +3,14 @@ require('colors');
 var SpecReporter = function(baseReporterDecorator, formatError, config) {
   baseReporterDecorator(this);
 
-  var reporterCfg = config.specReporter || {};
+  var reporterCfg = config.specReporter || {},
+      isWindows = (process && process.platform === 'win32');
+      
   this.prefixes = reporterCfg.prefixes || {
-    success: '✓ ',
-    failure: '✗ ',
-    skipped: '- ',
+    success: isWindows ? '\u221A' : '✓ ',
+    failure: isWindows ? '\u00D7' : '✗ ',
+    skipped: isWindows ? '.' : '- ',
   };
-
-  if (process && process.platform === 'win32') {
-    this.prefixes.success = '\u221A';
-    this.prefixes.failure = '\u00D7';
-    this.prefixes.skipped = '.';
-  }
 
   this.failures = [];
   this.USE_COLORS = false;
