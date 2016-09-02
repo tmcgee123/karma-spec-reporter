@@ -203,19 +203,34 @@ describe('SpecReporter', function () {
       });
 
       describe('and showSpecTiming is truthy', function () {
-        var newSpecReporter;
-        var config = {};
-        beforeEach(function () {
-          config.specReporter = {
-            showSpecTiming: true,
-          };
-          newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+          var newSpecReporter;
+          var config = {};
+          beforeEach(function () {
+            config.specReporter = {
+              showSpecTiming: true,
+            };
+            newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+          });
+
+          it('should set the showSpecTiming flag to true', function () {
+            newSpecReporter.showSpecTiming.should.equal(true);
+          });
         });
 
-        it('should set the showSpecTiming flag to true', function () {
-          newSpecReporter.showSpecTiming.should.equal(true);
+      describe('and summaryOnly is truthy', function () {
+          var newSpecReporter;
+          var config = {};
+          beforeEach(function () {
+            config.specReporter = {
+            	summaryOnly: true,
+            };
+            newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+          });
+
+          it('should set the summaryOnly flag to true', function () {
+            newSpecReporter.summaryOnly.should.equal(true);
+          });
         });
-      });
     });
   });
 
