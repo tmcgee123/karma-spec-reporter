@@ -107,7 +107,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
 
       var msg = indent + status + specName + elapsedTime;
 
-      if (!reporterCfg.summaryOnly) {
+      if (!this.summaryOnly) {
 	      result.log.forEach(function(log) {
 	        if (reporterCfg.maxLogLines) {
 	          log = log.split('\n').slice(0, reporterCfg.maxLogLines).join('\n');
@@ -144,6 +144,7 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
   this.specSuccess = reporterCfg.suppressPassed ? noop : this.writeSpecMessage(this.USE_COLORS ? this.prefixes.success.green : this.prefixes.success);
   this.specSkipped = reporterCfg.suppressSkipped ? noop : this.writeSpecMessage(this.USE_COLORS ? this.prefixes.skipped.cyan : this.prefixes.skipped);
   this.specFailure = reporterCfg.suppressFailed ? noop : this.onSpecFailure;
+  this.summaryOnly = reporterCfg.summaryOnly || false;
   this.suppressErrorSummary = reporterCfg.suppressErrorSummary || false;
   this.showSpecTiming = reporterCfg.showSpecTiming || false;
 };
