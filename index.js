@@ -107,13 +107,15 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
 
       var msg = indent + status + specName + elapsedTime;
 
-      result.log.forEach(function(log) {
-        if (reporterCfg.maxLogLines) {
-          log = log.split('\n').slice(0, reporterCfg.maxLogLines).join('\n');
-        }
-        msg += '\n' + formatError(log, '\t');
-      });
-
+      if (!reporterCfg.summaryOnly) {
+	      result.log.forEach(function(log) {
+	        if (reporterCfg.maxLogLines) {
+	          log = log.split('\n').slice(0, reporterCfg.maxLogLines).join('\n');
+	        }
+	        msg += '\n' + formatError(log, '\t');
+	      });
+      }
+      
       this.writeCommonMsg(msg + '\n');
 
       // NOTE: other useful properties
