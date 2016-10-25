@@ -37,7 +37,8 @@ karma.conf.js file
         suppressFailed: false,  // do not print information about failed tests
         suppressPassed: false,  // do not print information about passed tests
         suppressSkipped: true,  // do not print information about skipped tests
-        showSpecTiming: false // print the time elapsed for each spec
+        showSpecTiming: false, // print the time elapsed for each spec
+        supressBrowserLog: false, // do not print browser console messages into the terminal
       },
       plugins: ["karma-spec-reporter"],
     ...
