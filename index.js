@@ -1,14 +1,14 @@
 require('colors');
 
-var SpecReporter = function(baseReporterDecorator, formatError, config) {
+var SpecReporter = function (baseReporterDecorator, formatError, config) {
   baseReporterDecorator(this);
 
   var reporterCfg = config.specReporter || {};
   this.prefixes = reporterCfg.prefixes || {
-    success: '✓ ',
-    failure: '✗ ',
-    skipped: '- ',
-  };
+      success: '✓ ',
+      failure: '✗ ',
+      skipped: '- ',
+    };
 
   if (process && process.platform === 'win32') {
     this.prefixes.success = '\u221A';
@@ -33,9 +33,10 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
     this.TOTAL_FAILED = 'TOTAL: %d FAILED, %d SUCCESS'.red + '\n';
   }
 
-  this.onRunComplete = function(browsers, results) {
+  this.onRunComplete = function (browsers, results) {
     //NOTE: the renderBrowser function is defined in karma/reporters/Base.js
-    this.writeCommonMsg('\n' + browsers.map(this.renderBrowser).join('\n') + '\n');
+    this.writeCommonMsg('\n' + browsers.map(this.renderBrowser)
+        .join('\n') + '\n');
 
     if (browsers.length >= 1 && !results.disconnected && !results.error) {
       if (!results.failed) {
@@ -53,11 +54,11 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
     this.currentSuite = [];
   };
 
-  this.logFinalErrors = function(errors) {
-    this.writeCommonMsg('\n\n') ;
+  this.logFinalErrors = function (errors) {
+    this.writeCommonMsg('\n\n');
     this.WHITESPACE = '     ';
 
-    errors.forEach(function(failure, index) {
+    errors.forEach(function (failure, index) {
       index = index + 1;
 
       if (index > 1) {
@@ -66,23 +67,24 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
 
       this.writeCommonMsg((index + ') ' + failure.description + '\n').red);
       this.writeCommonMsg((this.WHITESPACE + failure.suite.join(' ') + '\n').red);
-      failure.log.forEach(function(log) {
+      failure.log.forEach(function (log) {
         if (reporterCfg.maxLogLines) {
           log = log.split('\n').slice(0, reporterCfg.maxLogLines).join('\n');
         }
-        this.writeCommonMsg(this.WHITESPACE + formatError(log).replace(/\\n/g, '\n').grey);
+        this.writeCommonMsg(this.WHITESPACE + formatError(log)
+            .replace(/\\n/g, '\n').grey);
       }, this);
     }, this);
 
-    this.writeCommonMsg('\n') ;
+    this.writeCommonMsg('\n');
   };
 
   this.currentSuite = [];
-  this.writeSpecMessage = function(status) {
-    return (function(browser, result) {
+  this.writeSpecMessage = function (status) {
+    return (function (browser, result) {
       var suite = result.suite;
       var indent = "  ";
-      suite.forEach(function(value, index) {
+      suite.forEach(function (value, index) {
         if (index >= this.currentSuite.length || this.currentSuite[index] != value) {
           if (index === 0) {
             this.writeCommonMsg('\n');
@@ -100,14 +102,14 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
       var specName = result.description;
       var elapsedTime = reporterCfg.showSpecTiming ? ' (' + result.time + 'ms)' : '';
 
-      if(this.USE_COLORS) {
-        if(result.skipped) specName = specName.cyan;
-        else if(!result.success) specName = specName.red;
+      if (this.USE_COLORS) {
+        if (result.skipped) specName = specName.cyan;
+        else if (!result.success) specName = specName.red;
       }
 
       var msg = indent + status + specName + elapsedTime;
 
-      result.log.forEach(function(log) {
+      result.log.forEach(function (log) {
         if (reporterCfg.maxLogLines) {
           log = log.split('\n').slice(0, reporterCfg.maxLogLines).join('\n');
         }
@@ -124,21 +126,22 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
 
   this.LOG_SINGLE_BROWSER = '%s LOG: %s\n';
   this.LOG_MULTI_BROWSER = '%s %s LOG: %s\n';
-  this.onBrowserLog = function(browser, log, type) {
-    if(!reporterCfg.supressBrowserLog) {
-      if (this._browsers && this._browsers.length === 1) {
-        this.write(this.LOG_SINGLE_BROWSER, type.toUpperCase(), this.USE_COLORS ? log.cyan : log);
-      } else {
-        this.write(this.LOG_MULTI_BROWSER, browser, type.toUpperCase(), this.USE_COLORS ? log.cyan : log);
-      }
+  var doLog = config && config.browserConsoleLogOptions && config.browserConsoleLogOptions.terminal;
+  this.onBrowserLog = doLog ? function (browser, log, type) {
+    if (this._browsers && this._browsers.length === 1) {
+      this.write(this.LOG_SINGLE_BROWSER, type.toUpperCase(), this.USE_COLORS ? log.cyan : log);
+    } else {
+      this.write(this.LOG_MULTI_BROWSER, browser, type.toUpperCase(), this.USE_COLORS ? log.cyan : log);
     }
-  };
+  } : noop;
 
+  function noop() {
+  }
 
-  function noop(){}
-  this.onSpecFailure = function(browsers, results) {
+  this.onSpecFailure = function (browsers, results) {
     this.failures.push(results);
-    this.writeSpecMessage(this.USE_COLORS ? this.prefixes.failure.red : this.prefixes.failure).apply(this, arguments);
+    this.writeSpecMessage(this.USE_COLORS ? this.prefixes.failure.red : this.prefixes.failure)
+      .apply(this, arguments);
   };
 
   this.specSuccess = reporterCfg.suppressPassed ? noop : this.writeSpecMessage(this.USE_COLORS ? this.prefixes.success.green : this.prefixes.success);
