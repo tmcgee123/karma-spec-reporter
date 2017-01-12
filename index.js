@@ -137,6 +137,9 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
   this.onSpecFailure = function(browsers, results) {
     this.failures.push(results);
     this.writeSpecMessage(this.USE_COLORS ? this.prefixes.failure.red : this.prefixes.failure).apply(this, arguments);
+    if (reporterCfg.failFast) {
+      throw new Error('Fail fast active for tests, exiting(failFast option is enabled)');
+    }
   };
 
   this.specSuccess = reporterCfg.suppressPassed ? noop : this.writeSpecMessage(this.USE_COLORS ? this.prefixes.success.green : this.prefixes.success);

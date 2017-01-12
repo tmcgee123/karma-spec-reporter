@@ -349,5 +349,26 @@ describe('SpecReporter', function () {
         });
       });
     });
+    
+    describe('onSpecFailure', function () {
+      describe('with FAIL_FAST option', function () {
+        var newSpecReporter;
+        var config = {};
+        beforeEach(function () {
+          config.specReporter = {
+            failFast: true
+          };
+          newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+        });
+        it('should throw an error', function () {
+          expect(function () {
+            newSpecReporter.onSpecFailure([],{
+              suite: [],
+              log: []
+            })
+          }).to.throw(Error, /failFast/);
+        });
+      });
+    });
   });
 });
