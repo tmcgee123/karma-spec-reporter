@@ -1,6 +1,6 @@
 {
   "name": "karma-spec-reporter",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "A Karma plugin. Report all spec-results to console (like mocha's spec reporter).",
   "main": "index.js",
   "scripts": {
