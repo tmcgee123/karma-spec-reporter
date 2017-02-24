@@ -39,6 +39,7 @@ var sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 var should = chai.should();
 var expect = chai.expect;
+var os = require('os');
 var reporterRewire = rewire('../index.js');
 var SpecReporter = require('../index.js')['reporter:spec'];
 
@@ -129,15 +130,28 @@ describe('SpecReporter', function () {
       });
 
       it('should set the BaseReporter function\'s colors', function () {
-        newSpecReporter.SPEC_FAILURE.should.equal(ansiColors.red + '%s %s FAILED' + ansiColors.reset + '\n');
-        newSpecReporter.SPEC_SLOW.should.equal(ansiColors.yellow + '%s SLOW %s: %s' + ansiColors.reset + '\n');
-        newSpecReporter.ERROR.should.equal(ansiColors.red + '%s ERROR' + ansiColors.reset + '\n');
-        newSpecReporter.FINISHED_ERROR.should.equal(ansiColors.red + ' ERROR' + ansiColors.reset);
-        newSpecReporter.FINISHED_SUCCESS.should.equal(ansiColors.green + ' SUCCESS' + ansiColors.reset);
-        newSpecReporter.FINISHED_DISCONNECTED.should.equal(ansiColors.red + ' DISCONNECTED' + ansiColors.reset);
-        newSpecReporter.X_FAILED.should.equal(ansiColors.red + ' (%d FAILED)' + ansiColors.reset);
-        newSpecReporter.TOTAL_SUCCESS.should.equal(ansiColors.green + 'TOTAL: %d SUCCESS' + ansiColors.reset + '\n');
-        newSpecReporter.TOTAL_FAILED.should.equal(ansiColors.red + 'TOTAL: %d FAILED, %d SUCCESS' + ansiColors.reset + '\n');
+        //NOTE: this is temporary as the colors module was updated
+        if (os.platform() === 'win32') {
+            newSpecReporter.SPEC_FAILURE.should.equal('%s %s FAILED\n');
+            newSpecReporter.SPEC_SLOW.should.equal('%s SLOW %s: %s\n');
+            newSpecReporter.ERROR.should.equal('%s ERROR\n');
+            newSpecReporter.FINISHED_ERROR.should.equal(' ERROR');
+            newSpecReporter.FINISHED_SUCCESS.should.equal(' SUCCESS');
+            newSpecReporter.FINISHED_DISCONNECTED.should.equal(' DISCONNECTED');
+            newSpecReporter.X_FAILED.should.equal(' (%d FAILED)');
+            newSpecReporter.TOTAL_SUCCESS.should.equal('TOTAL: %d SUCCESS\n');
+            newSpecReporter.TOTAL_FAILED.should.equal('TOTAL: %d FAILED, %d SUCCESS\n');
+        } else {
+            newSpecReporter.SPEC_FAILURE.should.equal(ansiColors.red + '%s %s FAILED' + ansiColors.reset + '\n');
+            newSpecReporter.SPEC_SLOW.should.equal(ansiColors.yellow + '%s SLOW %s: %s' + ansiColors.reset + '\n');
+            newSpecReporter.ERROR.should.equal(ansiColors.red + '%s ERROR' + ansiColors.reset + '\n');
+            newSpecReporter.FINISHED_ERROR.should.equal(ansiColors.red + ' ERROR' + ansiColors.reset);
+            newSpecReporter.FINISHED_SUCCESS.should.equal(ansiColors.green + ' SUCCESS' + ansiColors.reset);
+            newSpecReporter.FINISHED_DISCONNECTED.should.equal(ansiColors.red + ' DISCONNECTED' + ansiColors.reset);
+            newSpecReporter.X_FAILED.should.equal(ansiColors.red + ' (%d FAILED)' + ansiColors.reset);
+            newSpecReporter.TOTAL_SUCCESS.should.equal(ansiColors.green + 'TOTAL: %d SUCCESS' + ansiColors.reset + '\n');
+            newSpecReporter.TOTAL_FAILED.should.equal(ansiColors.red + 'TOTAL: %d FAILED, %d SUCCESS' + ansiColors.reset + '\n');
+        }
       });
     });
 
@@ -349,7 +363,7 @@ describe('SpecReporter', function () {
         });
       });
     });
-    
+
     describe('onSpecFailure', function () {
       describe('with FAIL_FAST option', function () {
         var newSpecReporter;
