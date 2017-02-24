@@ -49,9 +49,9 @@ var ansiColors = {
   reset: '\u001b[39m'
 };
 var windowsIcons = {
-  success: '\u221A',
-  failure: '\u00D7',
-  skipped: '.'
+  success: '\u221A ',
+  failure: '\u00D7 ',
+  skipped: '- '
 }
 
 //baseReporterDecorator functions

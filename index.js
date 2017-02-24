@@ -11,9 +11,9 @@ var SpecReporter = function(baseReporterDecorator, formatError, config) {
   };
 
   if (process && process.platform === 'win32') {
-    this.prefixes.success = '\u221A';
-    this.prefixes.failure = '\u00D7';
-    this.prefixes.skipped = '.';
+    this.prefixes.success = '\u221A ';
+    this.prefixes.failure = '\u00D7 ';
+    this.prefixes.skipped = '- ';
   }
 
   this.failures = [];
