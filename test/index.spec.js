@@ -100,7 +100,7 @@ describe('SpecReporter', function () {
         }
       }
       it('SpecReporter should allow overriding success icon only', function () {
-        var expected = 'PASS'; 
+        var expected = 'PASS';
         var config = createConfigWithPrefixes({ success: expected });
         var newSpecReporter = createSpecReporter(config);
         newSpecReporter.prefixes.success.should.equal(expected);
@@ -109,7 +109,7 @@ describe('SpecReporter', function () {
       });
 
       it('SpecReporter should allow overriding failure icon only', function () {
-        var expected = 'FAIL'; 
+        var expected = 'FAIL';
         var config = createConfigWithPrefixes({ failure: expected });
         var newSpecReporter = createSpecReporter(config);
         newSpecReporter.prefixes.success.should.equal(windowsIcons.success);
@@ -118,7 +118,7 @@ describe('SpecReporter', function () {
       });
 
       it('SpecReporter should allow overriding skipped icon only', function () {
-        var expected = 'SKIPPED'; 
+        var expected = 'SKIPPED';
         var config = createConfigWithPrefixes({ skipped: expected });
         var newSpecReporter = createSpecReporter(config);
         newSpecReporter.prefixes.success.should.equal(windowsIcons.success);
@@ -127,7 +127,7 @@ describe('SpecReporter', function () {
       });
 
       it('SpecReporter should allow overriding all icons', function () {
-        var config = createConfigWithPrefixes({ 
+        var config = createConfigWithPrefixes({
           skipped: 'Skipped',
           failure: 'Failed',
           success: 'Win!'
@@ -394,6 +394,98 @@ describe('SpecReporter', function () {
             });
           });
         });
+      });
+    });
+
+    describe('logFinalErrors', function () {
+      var writtenMessages = [];
+      beforeEach(function () {
+        writtenMessages = [];
+      });
+      function passThrough(str) {
+        return str;
+      }
+      function createSpecReporter(options) {
+        var result = new SpecReporter[1](baseReporterDecorator, passThrough, options || {});
+        result.writeCommonMsg = function (str) {
+          writtenMessages.push(str);
+        };
+        return result;
+      }
+      
+      it('should write a single failure out', function () {
+        var errors = [
+          {
+            suite: ['A', 'B'],
+            description: 'should do stuff',
+            log: [
+              'The Error!'
+            ]
+          }
+        ];
+        var expected = ['\n\n',
+          '\u001b[31m1) should do stuff\n\u001b[39m',
+          '\u001b[31m     A B\n\u001b[39m',
+          '     \u001b[90mThe Error!\u001b[39m',
+          '\n'];
+        var specReporter = createSpecReporter();
+        specReporter.logFinalErrors(errors);
+        writtenMessages.should.eql(expected);
+      });
+
+      it('should truncate messages exceding maxLogLines in length', function () {
+        var errors = [
+          {
+            suite: ['A', 'B'],
+            description: 'should do stuff',
+            log: [
+              'The Error!\nThis line should be discarded'
+            ]
+          }
+        ];
+        var expected = ['\n\n',
+          '\u001b[31m1) should do stuff\n\u001b[39m',
+          '\u001b[31m     A B\n\u001b[39m',
+          '     \u001b[90mThe Error!\u001b[39m',
+          '\n'];
+        var specReporter = createSpecReporter({
+          specReporter: {
+            maxLogLines: 1
+          }
+        });
+        specReporter.logFinalErrors(errors);
+        writtenMessages.should.eql(expected);
+      });
+
+      it('should write out multiple failures', function () {
+        var errors = [
+          {
+            suite: ['A', 'B'],
+            description: 'should do stuff',
+            log: [
+              'The Error!'
+            ]
+          },
+          {
+            suite: ['C', 'D'],
+            description: 'should do more stuff',
+            log: [
+              'Another error!'
+            ]
+          }
+        ];
+        var expected = ['\n\n',
+          '\u001b[31m1) should do stuff\n\u001b[39m',
+          '\u001b[31m     A B\n\u001b[39m',
+          '     \u001b[90mThe Error!\u001b[39m',
+          '\n',         
+          '\u001b[31m2) should do more stuff\n\u001b[39m',
+          '\u001b[31m     C D\n\u001b[39m',
+          '     \u001b[90mAnother error!\u001b[39m',
+          '\n'];
+        var specReporter = createSpecReporter();
+        specReporter.logFinalErrors(errors);
+        writtenMessages.should.eql(expected);
       });
     });
 

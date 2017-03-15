@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha-runner --reporter spec test/**/*.spec.js",
-    "coverage": "istanbul cover -x test/**/*.js node_modules/mocha/bin/_mocha -- --reporter spec test/**/*.js"
+    "coverage": "istanbul cover -x test/**/*.js node_modules/mocha/bin/_mocha -- --reporter spec test/**/*.js",
+    "precoverage-report": "run-s coverage",
+    "coverage-report": "istanbul report"
   },
   "repository": {
     "type": "git",
@@ -28,6 +30,7 @@
     "coveralls": "^2.11.4",
     "istanbul": "^0.4.0",
     "mocha-runner": "^1.1.1",
+    "npm-run-all": "^4.0.2",
     "rewire": "^2.5.1",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0"
