@@ -69,10 +69,8 @@ var baseReporterDecorator = function (context) {
 describe('SpecReporter', function () {
   describe('when initializing', function () {
     describe('and on a windows machine', function () {
-      var newSpecReporter;
-      var config = {};
-
-      beforeEach(function () {
+      function createSpecReporter(config) {
+        config = config || {};
         var processMock = {
           platform: function () {
             return 'win32';
@@ -84,13 +82,61 @@ describe('SpecReporter', function () {
             platform: 'win32'
           }
         });
-        newSpecReporter = new reporterRewire['reporter:spec'][1](baseReporterDecorator, formatError, config);
-      });
+        return new reporterRewire['reporter:spec'][1](baseReporterDecorator, formatError, config);
+      };
 
       it('SpecReporter should have icons defined appropriately', function () {
+        var newSpecReporter = createSpecReporter();
         newSpecReporter.prefixes.success.should.equal(windowsIcons.success);
         newSpecReporter.prefixes.failure.should.equal(windowsIcons.failure);
         newSpecReporter.prefixes.skipped.should.equal(windowsIcons.skipped);
+      });
+
+      function createConfigWithPrefixes(prefixes) {
+        return {
+          specReporter: {
+            prefixes: prefixes
+          }
+        }
+      }
+      it('SpecReporter should allow overriding success icon only', function () {
+        var expected = 'PASS'; 
+        var config = createConfigWithPrefixes({ success: expected });
+        var newSpecReporter = createSpecReporter(config);
+        newSpecReporter.prefixes.success.should.equal(expected);
+        newSpecReporter.prefixes.failure.should.equal(windowsIcons.failure);
+        newSpecReporter.prefixes.skipped.should.equal(windowsIcons.skipped);
+      });
+
+      it('SpecReporter should allow overriding failure icon only', function () {
+        var expected = 'FAIL'; 
+        var config = createConfigWithPrefixes({ failure: expected });
+        var newSpecReporter = createSpecReporter(config);
+        newSpecReporter.prefixes.success.should.equal(windowsIcons.success);
+        newSpecReporter.prefixes.failure.should.equal(expected);
+        newSpecReporter.prefixes.skipped.should.equal(windowsIcons.skipped);
+      });
+
+      it('SpecReporter should allow overriding skipped icon only', function () {
+        var expected = 'SKIPPED'; 
+        var config = createConfigWithPrefixes({ skipped: expected });
+        var newSpecReporter = createSpecReporter(config);
+        newSpecReporter.prefixes.success.should.equal(windowsIcons.success);
+        newSpecReporter.prefixes.failure.should.equal(windowsIcons.failure);
+        newSpecReporter.prefixes.skipped.should.equal(expected);
+      });
+
+      it('SpecReporter should allow overriding all icons', function () {
+        var config = createConfigWithPrefixes({ 
+          skipped: 'Skipped',
+          failure: 'Failed',
+          success: 'Win!'
+        });
+        var expected = config.specReporter.prefixes;
+        var newSpecReporter = createSpecReporter(config);
+        newSpecReporter.prefixes.success.should.equal(expected.success);
+        newSpecReporter.prefixes.failure.should.equal(expected.failure);
+        newSpecReporter.prefixes.skipped.should.equal(expected.skipped);
       });
     });
     describe('and colors are not defined', function () {
