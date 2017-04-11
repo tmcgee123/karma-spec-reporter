@@ -3,18 +3,16 @@ require('colors');
 var SpecReporter = function (baseReporterDecorator, formatError, config) {
   baseReporterDecorator(this);
 
-  var reporterCfg = config.specReporter || {};
-  this.prefixes = reporterCfg.prefixes || {
-      success: '✓ ',
-      failure: '✗ ',
-      skipped: '- ',
-    };
-
-  if (process && process.platform === 'win32') {
-    this.prefixes.success = '\u221A ';
-    this.prefixes.failure = '\u00D7 ';
-    this.prefixes.skipped = '- ';
+  var platform = process ? process.platform : 'unknown';
+  var selectPrefix = function(defaultMarker, win32Marker) {
+    return platform === 'win32' ? win32Marker : defaultMarker;
   }
+  var reporterCfg = config.specReporter || {};
+  this.prefixes = Object.assign({
+      success: selectPrefix('✓ ', '\u221A '),
+      failure: selectPrefix('✗ ', '\u00D7 '),
+      skipped: selectPrefix('- ', '\- ')
+    }, reporterCfg.prefixes);
 
   this.failures = [];
   this.USE_COLORS = false;

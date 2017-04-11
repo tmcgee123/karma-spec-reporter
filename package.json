@@ -4,8 +4,10 @@
   "description": "A Karma plugin. Report all spec-results to console (like mocha's spec reporter).",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha-runner --reporter spec 'test/**/*.spec.js'",
-    "coverage": "./node_modules/.bin/istanbul cover -x 'test/**/*.js' ./node_modules/.bin/mocha-runner -- --reporter spec 'test/**/*.js'"
+    "test": "mocha-runner --reporter spec test/**/*.spec.js",
+    "coverage": "istanbul cover -x test/**/*.js node_modules/mocha/bin/_mocha -- --reporter spec test/**/*.js",
+    "precoverage-report": "run-s coverage",
+    "coverage-report": "istanbul report"
   },
   "repository": {
     "type": "git",
@@ -27,7 +29,9 @@
     "chai": "^3.4.0",
     "coveralls": "^2.11.4",
     "istanbul": "^0.4.0",
+    "mocha": "^3.2.0",
     "mocha-runner": "^1.1.1",
+    "npm-run-all": "^4.0.2",
     "rewire": "^2.5.1",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0"
