@@ -1,4 +1,4 @@
-require('colors');
+var colors = require('colors');
 
 var SpecReporter = function (baseReporterDecorator, formatError, config) {
   baseReporterDecorator(this);
@@ -19,6 +19,7 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
 
   // colorize output of BaseReporter functions
   if (config.colors) {
+    colors.enabled = true;
     this.USE_COLORS = true;
     this.SPEC_FAILURE = '%s %s FAILED'.red + '\n';
     this.SPEC_SLOW = '%s SLOW %s: %s'.yellow + '\n';
