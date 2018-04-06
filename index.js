@@ -38,10 +38,11 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
         .join('\n') + '\n');
 
     if (browsers.length >= 1 && !results.disconnected && !results.error) {
+      var currentTime = reporterCfg.showSpecTiming ? new Date().toLocaleString() + ' - ' : '';
       if (!results.failed) {
-        this.write(this.TOTAL_SUCCESS, results.success);
+        this.write(currentTime.yellow + this.TOTAL_SUCCESS, results.success);
       } else {
-        this.write(this.TOTAL_FAILED, results.failed, results.success);
+        this.write(currentTime.yellow + this.TOTAL_FAILED, results.failed, results.success);
         if (!this.suppressErrorSummary) {
           this.logFinalErrors(this.failures);
         }
