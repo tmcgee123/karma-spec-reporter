@@ -263,6 +263,21 @@ describe('SpecReporter', function () {
           newSpecReporter.showSpecTiming.should.equal(true);
         });
       });
+
+      describe('and showBrowser is truthy', function () {
+        var newSpecReporter;
+        var config = {};
+        beforeEach(function () {
+          config.specReporter = {
+            showBrowser: true,
+          };
+          newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+        });
+
+        it('should set the showBrowser flag to true', function () {
+          newSpecReporter.showBrowser.should.equal(true);
+        });
+      });
     });
   });
 
