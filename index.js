@@ -16,6 +16,7 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
 
   this.failures = [];
   this.USE_COLORS = false;
+  this.slowPokes = [];
 
   // colorize output of BaseReporter functions
   if (config.colors) {
@@ -46,11 +47,15 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
           this.logFinalErrors(this.failures);
         }
       }
+      if (this.reportSlowerThan) {
+        this.logFinalSlow(this.slowPokes);
+      }
     }
 
     this.write('\n');
     this.failures = [];
     this.currentSuite = [];
+    this.slowPokes = [];
   };
 
   this.logFinalErrors = function (errors) {
@@ -78,6 +83,35 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
     this.writeCommonMsg('\n');
   };
 
+  this.logFinalSlow = function(slowPokes) {
+    this.writeCommonMsg('\n\n');
+    this.WHITESPACE = '     ';
+    slowPokes
+      .sort(function(next, prev) {
+        if (next.time > prev.time) {
+          return -1;
+        } else if (next.time < prev.time) {
+          return 1;
+        } else {
+          return 0;
+        }
+      })
+      .forEach(function(slowPoke, index) {
+        // Only show the top 5
+        if (index > 4) {
+          return;
+        }
+
+        index = index + 1;
+
+        if (index == 1) {
+          this.writeCommonMsg(('SLOW: ' + slowPokes.length + '\n\n').yellow);
+          this.writeCommonMsg(('5 Slowest: ' + '\n').yellow);
+        }
+        this.writeCommonMsg((index + ') ' + slowPoke.fullName + ' (' + slowPoke.time + ')' + '\n').yellow);
+      }, this);
+  };
+
   this.currentSuite = [];
   this.writeSpecMessage = function (status) {
     return (function (browser, result) {
@@ -100,6 +134,10 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
 
       var specName = result.description;
       var elapsedTime = reporterCfg.showSpecTiming ? ' (' + result.time + 'ms)' : '';
+
+      if (this.reportSlowerThan && result.time > config.reportSlowerThan) {
+        this.logSlowPoke(result);
+      }
 
       if (this.USE_COLORS) {
         if (result.skipped) specName = specName.cyan;
@@ -145,11 +183,20 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
     }
   };
 
-  this.specSuccess = reporterCfg.suppressPassed ? noop : this.writeSpecMessage(this.USE_COLORS ? this.prefixes.success.green : this.prefixes.success);
-  this.specSkipped = reporterCfg.suppressSkipped ? noop : this.writeSpecMessage(this.USE_COLORS ? this.prefixes.skipped.cyan : this.prefixes.skipped);
+  this.logSlowPoke = function(result) {
+    this.slowPokes.push(result);
+  };
+
+  this.specSuccess = reporterCfg.suppressPassed
+    ? noop
+    : this.writeSpecMessage(this.USE_COLORS ? this.prefixes.success.green : this.prefixes.success);
+  this.specSkipped = reporterCfg.suppressSkipped
+    ? noop
+    : this.writeSpecMessage(this.USE_COLORS ? this.prefixes.skipped.cyan : this.prefixes.skipped);
   this.specFailure = reporterCfg.suppressFailed ? noop : this.onSpecFailure;
   this.suppressErrorSummary = reporterCfg.suppressErrorSummary || false;
   this.showSpecTiming = reporterCfg.showSpecTiming || false;
+  this.reportSlowerThan = config.reportSlowerThan || false;
 };
 
 SpecReporter.$inject = ['baseReporterDecorator', 'formatError', 'config'];
