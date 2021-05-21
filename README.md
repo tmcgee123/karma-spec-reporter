@@ -33,6 +33,7 @@ karma.conf.js file
       reporters: ["spec"],
       specReporter: {
         maxLogLines: 5,             // limit number of lines logged per test
+        suppressSummary: true,      // do not print summary
         suppressErrorSummary: true, // do not print error summary
         suppressFailed: false,      // do not print information about failed tests
         suppressPassed: false,      // do not print information about passed tests

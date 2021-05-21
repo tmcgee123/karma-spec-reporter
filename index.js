@@ -35,14 +35,20 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
 
   this.onRunComplete = function (browsers, results) {
     //NOTE: the renderBrowser function is defined in karma/reporters/Base.js
-    this.writeCommonMsg('\n' + browsers.map(this.renderBrowser)
-        .join('\n') + '\n');
+    if (!this.suppressSummary) {
+      this.writeCommonMsg('\n' + browsers.map(this.renderBrowser)
+          .join('\n') + '\n');
+    }
 
     if (browsers.length >= 1 && !results.disconnected && !results.error) {
       if (!results.failed) {
-        this.write(this.TOTAL_SUCCESS, results.success);
+        if (!this.suppressSummary) {
+          this.write(this.TOTAL_SUCCESS, results.success);
+        }
       } else {
-        this.write(this.TOTAL_FAILED, results.failed, results.success);
+        if (!this.suppressSummary) {
+          this.write(this.TOTAL_FAILED, results.failed, results.success);
+        }
         if (!this.suppressErrorSummary) {
           this.logFinalErrors(this.failures);
         }
@@ -194,6 +200,7 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
     ? noop
     : this.writeSpecMessage(this.USE_COLORS ? this.prefixes.skipped.cyan : this.prefixes.skipped);
   this.specFailure = reporterCfg.suppressFailed ? noop : this.onSpecFailure;
+  this.suppressSummary = reporterCfg.suppressSummary || false;
   this.suppressErrorSummary = reporterCfg.suppressErrorSummary || false;
   this.showSpecTiming = reporterCfg.showSpecTiming || false;
   this.reportSlowerThan = config.reportSlowerThan || false;

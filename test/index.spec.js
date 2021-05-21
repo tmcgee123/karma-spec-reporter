@@ -236,6 +236,21 @@ describe('SpecReporter', function() {
         });
       });
 
+      describe('and suppressSummary is truthy', function () {
+        var newSpecReporter;
+        var config = {};
+        beforeEach(function() {
+          config.specReporter = {
+            suppressSummary: true
+          };
+          newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+        });
+
+        it('should set the suppressSummary flag to true', function() {
+          newSpecReporter.suppressSummary.should.equal(true);
+        });
+      })
+
       describe('and suppressErrorSummary is truthy', function() {
         var newSpecReporter;
         var config = {};
@@ -297,31 +312,67 @@ describe('SpecReporter', function() {
 
       describe('with browsers', function() {
         describe('and there are no failures', function() {
-          var newSpecReporter;
-          var config = {};
+          describe('and suppressSummary is true', function() {
+            var newSpecReporter;
+            var config = {
+              specReporter: {
+                suppressSummary: true
+              }
+            };
 
-          beforeEach(function() {
-            newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
-            newSpecReporter.currentSuite.push('suite name');
-            newSpecReporter.onRunComplete(['testValue'], {
-              disconnected: false,
-              error: false,
-              failed: 0,
-              success: 10
+            beforeEach(function() {
+              newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+              newSpecReporter.currentSuite.push('suite name');
+              newSpecReporter.onRunComplete(['testValue'], {
+                disconnected: false,
+                error: false,
+                failed: 0,
+                success: 10
+              });
+            });
+
+            it('should not call to write all of the successful specs', function() {
+              newSpecReporter.write.should.have.been.calledOnce;
+              newSpecReporter.write.should.have.been.calledWithExactly('\n');
+            });
+
+            it('should reset failures and currentSuite arrays', function() {
+              newSpecReporter.currentSuite.length.should.equal(0);
+              newSpecReporter.failures.length.should.equal(0);
+            });
+
+            it('should not call writeCommonMsg', function() {
+              newSpecReporter.writeCommonMsg.should.not.have.been.called;
             });
           });
 
-          it('should call to write all of the successful specs', function() {
-            newSpecReporter.write.should.have.been.calledWith(undefined, 10);
-          });
+          describe('and suppressSummary is false', function() {
+            var newSpecReporter;
+            var config = {};
 
-          it('should reset failures and currentSuite arrays', function() {
-            newSpecReporter.currentSuite.length.should.equal(0);
-            newSpecReporter.failures.length.should.equal(0);
-          });
+            beforeEach(function() {
+              newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+              newSpecReporter.currentSuite.push('suite name');
+              newSpecReporter.onRunComplete(['testValue'], {
+                disconnected: false,
+                error: false,
+                failed: 0,
+                success: 10
+              });
+            });
 
-          it('should call writeCommonMsg', function() {
-            newSpecReporter.writeCommonMsg.should.have.been.called;
+            it('should call to write all of the successful specs', function() {
+              newSpecReporter.write.should.have.been.calledWith(undefined, 10);
+            });
+
+            it('should reset failures and currentSuite arrays', function() {
+              newSpecReporter.currentSuite.length.should.equal(0);
+              newSpecReporter.failures.length.should.equal(0);
+            });
+
+            it('should call writeCommonMsg', function() {
+              newSpecReporter.writeCommonMsg.should.have.been.called;
+            });
           });
         });
 
