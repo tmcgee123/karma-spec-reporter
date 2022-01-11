@@ -135,7 +135,7 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
       var specName = result.description;
       var elapsedTime = reporterCfg.showSpecTiming ? ' (' + result.time + 'ms)' : '';
 
-      if (this.reportSlowerThan && result.time > config.reportSlowerThan) {
+      if (this.reportSlowerThan && result.time > this.reportSlowerThan) {
         this.logSlowPoke(result);
       }
 
@@ -196,7 +196,7 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
   this.specFailure = reporterCfg.suppressFailed ? noop : this.onSpecFailure;
   this.suppressErrorSummary = reporterCfg.suppressErrorSummary || false;
   this.showSpecTiming = reporterCfg.showSpecTiming || false;
-  this.reportSlowerThan = config.reportSlowerThan || false;
+  this.reportSlowerThan = reporterCfg.reportSlowerThan || false;
 };
 
 SpecReporter.$inject = ['baseReporterDecorator', 'formatError', 'config'];
