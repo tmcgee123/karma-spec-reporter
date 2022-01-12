@@ -32,7 +32,6 @@
 
 /* jshint ignore:end */
 
-var rewire = require('rewire');
 var chai = require('chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
@@ -40,7 +39,6 @@ chai.use(sinonChai);
 var should = chai.should();
 var expect = chai.expect;
 var os = require('os');
-var reporterRewire = rewire('../index.js');
 var SpecReporter = require('../index.js')['reporter:spec'];
 
 var ansiColors = {
@@ -65,24 +63,23 @@ var baseReporterDecorator = function(context) {
   context.writeCommonMsg = sinon.spy();
   context.write = sinon.spy();
 };
-
+var originalPlatform = '';
 describe('SpecReporter', function() {
   describe('when initializing', function() {
     describe('and on a windows machine', function() {
+      after(function(done){
+        Object.defineProperty(process, 'platform', {
+           value: originalPlatform
+        });
+        done();
+      })
       function createSpecReporter(config) {
         config = config || {};
-        var processMock = {
-          platform: function() {
-            return 'win32';
-          }
-        };
-        reporterRewire.__set__({
-          'reporter:spec': SpecReporter,
-          process: {
-            platform: 'win32'
-          }
+        originalPlatform = process.platform;
+        Object.defineProperty(process, 'platform', {
+           value: 'win32'
         });
-        return new reporterRewire['reporter:spec'][1](baseReporterDecorator, formatError, config);
+        return new SpecReporter[1](baseReporterDecorator, formatError, config);
       }
 
       it('SpecReporter should have icons defined appropriately', function() {

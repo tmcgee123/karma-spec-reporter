@@ -32,7 +32,6 @@
     "mocha": "^3.2.0",
     "mocha-runner": "^1.1.1",
     "npm-run-all": "^4.0.2",
-    "rewire": "^2.5.1",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0"
   },
