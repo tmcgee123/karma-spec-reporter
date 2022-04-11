@@ -38,6 +38,7 @@ karma.conf.js file
         suppressFailed: false,      // do not print information about failed tests
         suppressPassed: false,      // do not print information about passed tests
         suppressSkipped: true,      // do not print information about skipped tests
+        showBrowser: false,         // print the browser for each spec
         showSpecTiming: false,      // print the time elapsed for each spec
         failFast: true,             // test would finish with error when a first fail occurs
         prefixes: {
