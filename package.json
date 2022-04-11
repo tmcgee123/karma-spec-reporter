@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha-runner --reporter spec test/**/*.spec.js",
-    "coverage": "istanbul cover -x test/**/*.js node_modules/mocha/bin/_mocha -- --reporter spec test/**/*.js",
+    "coverage": "istanbul cover -x test/**/*.js node_modules/mocha/bin/_mocha --report lcovonly -- -R spec test/**/*.js",
     "precoverage-report": "run-s coverage",
     "coverage-report": "istanbul report"
   },
@@ -30,6 +30,7 @@
     "coveralls": "^2.11.4",
     "istanbul": "^0.4.0",
     "mocha": "^9.2.2",
+    "mocha-lcov-reporter": "^1.3.0",
     "mocha-runner": "^3.0.1",
     "npm-run-all": "^4.0.2",
     "sinon": "^1.17.2",
