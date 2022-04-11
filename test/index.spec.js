@@ -32,7 +32,6 @@
 
 /* jshint ignore:end */
 
-var rewire = require('rewire');
 var chai = require('chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
@@ -40,7 +39,6 @@ chai.use(sinonChai);
 var should = chai.should();
 var expect = chai.expect;
 var os = require('os');
-var reporterRewire = rewire('../index.js');
 var SpecReporter = require('../index.js')['reporter:spec'];
 
 var ansiColors = {
@@ -65,24 +63,23 @@ var baseReporterDecorator = function(context) {
   context.writeCommonMsg = sinon.spy();
   context.write = sinon.spy();
 };
-
+var originalPlatform = '';
 describe('SpecReporter', function() {
   describe('when initializing', function() {
     describe('and on a windows machine', function() {
+      after(function(done){
+        Object.defineProperty(process, 'platform', {
+           value: originalPlatform
+        });
+        done();
+      })
       function createSpecReporter(config) {
         config = config || {};
-        var processMock = {
-          platform: function() {
-            return 'win32';
-          }
-        };
-        reporterRewire.__set__({
-          'reporter:spec': SpecReporter,
-          process: {
-            platform: 'win32'
-          }
+        originalPlatform = process.platform;
+        Object.defineProperty(process, 'platform', {
+           value: 'win32'
         });
-        return new reporterRewire['reporter:spec'][1](baseReporterDecorator, formatError, config);
+        return new SpecReporter[1](baseReporterDecorator, formatError, config);
       }
 
       it('SpecReporter should have icons defined appropriately', function() {
@@ -236,6 +233,21 @@ describe('SpecReporter', function() {
         });
       });
 
+      describe('and suppressSummary is truthy', function () {
+        var newSpecReporter;
+        var config = {};
+        beforeEach(function() {
+          config.specReporter = {
+            suppressSummary: true
+          };
+          newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+        });
+
+        it('should set the suppressSummary flag to true', function() {
+          newSpecReporter.suppressSummary.should.equal(true);
+        });
+      })
+
       describe('and suppressErrorSummary is truthy', function() {
         var newSpecReporter;
         var config = {};
@@ -263,6 +275,21 @@ describe('SpecReporter', function() {
 
         it('should set the showSpecTiming flag to true', function() {
           newSpecReporter.showSpecTiming.should.equal(true);
+        });
+      });
+
+      describe('and showBrowser is truthy', function () {
+        var newSpecReporter;
+        var config = {};
+        beforeEach(function () {
+          config.specReporter = {
+            showBrowser: true,
+          };
+          newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+        });
+
+        it('should set the showBrowser flag to true', function () {
+          newSpecReporter.showBrowser.should.equal(true);
         });
       });
     });
@@ -297,31 +324,67 @@ describe('SpecReporter', function() {
 
       describe('with browsers', function() {
         describe('and there are no failures', function() {
-          var newSpecReporter;
-          var config = {};
+          describe('and suppressSummary is true', function() {
+            var newSpecReporter;
+            var config = {
+              specReporter: {
+                suppressSummary: true
+              }
+            };
 
-          beforeEach(function() {
-            newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
-            newSpecReporter.currentSuite.push('suite name');
-            newSpecReporter.onRunComplete(['testValue'], {
-              disconnected: false,
-              error: false,
-              failed: 0,
-              success: 10
+            beforeEach(function() {
+              newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+              newSpecReporter.currentSuite.push('suite name');
+              newSpecReporter.onRunComplete(['testValue'], {
+                disconnected: false,
+                error: false,
+                failed: 0,
+                success: 10
+              });
+            });
+
+            it('should not call to write all of the successful specs', function() {
+              newSpecReporter.write.should.have.been.calledOnce;
+              newSpecReporter.write.should.have.been.calledWithExactly('\n');
+            });
+
+            it('should reset failures and currentSuite arrays', function() {
+              newSpecReporter.currentSuite.length.should.equal(0);
+              newSpecReporter.failures.length.should.equal(0);
+            });
+
+            it('should not call writeCommonMsg', function() {
+              newSpecReporter.writeCommonMsg.should.not.have.been.called;
             });
           });
 
-          it('should call to write all of the successful specs', function() {
-            newSpecReporter.write.should.have.been.calledWith(undefined, 10);
-          });
+          describe('and suppressSummary is false', function() {
+            var newSpecReporter;
+            var config = {};
 
-          it('should reset failures and currentSuite arrays', function() {
-            newSpecReporter.currentSuite.length.should.equal(0);
-            newSpecReporter.failures.length.should.equal(0);
-          });
+            beforeEach(function() {
+              newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+              newSpecReporter.currentSuite.push('suite name');
+              newSpecReporter.onRunComplete(['testValue'], {
+                disconnected: false,
+                error: false,
+                failed: 0,
+                success: 10
+              });
+            });
 
-          it('should call writeCommonMsg', function() {
-            newSpecReporter.writeCommonMsg.should.have.been.called;
+            it('should call to write all of the successful specs', function() {
+              newSpecReporter.write.should.have.been.calledWith(undefined, 10);
+            });
+
+            it('should reset failures and currentSuite arrays', function() {
+              newSpecReporter.currentSuite.length.should.equal(0);
+              newSpecReporter.failures.length.should.equal(0);
+            });
+
+            it('should call writeCommonMsg', function() {
+              newSpecReporter.writeCommonMsg.should.have.been.called;
+            });
           });
         });
 

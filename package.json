@@ -1,6 +1,6 @@
 {
   "name": "karma-spec-reporter",
-  "version": "0.0.33",
+  "version": "0.0.34",
   "description": "A Karma plugin. Report all spec-results to console (like mocha's spec reporter).",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/mlex/karma-spec-reporter.git"
+    "url": "git://github.com/tmcgee123/karma-spec-reporter.git"
   },
   "keywords": [
     "karma-plugin",
@@ -32,7 +32,6 @@
     "mocha": "^3.2.0",
     "mocha-runner": "^1.1.1",
     "npm-run-all": "^4.0.2",
-    "rewire": "^2.5.1",
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0"
   },
