@@ -6,25 +6,10 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.2
 
-jobs:
-  test:
-    docker:
-      - image: cimg/node:17.2.0
-    steps:
-      - run:
-          name: install-npm-wee
-          command: npm install
-      - run:
-          name: test
-          command: npm run-script coverage
-      - run:
-          name: coverage
-          command: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   test: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - test
+      - node/test
