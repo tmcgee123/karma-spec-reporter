@@ -8,9 +8,11 @@ orbs:
 
 jobs:
   node17:
+    working_directory: ~/karma-spec-reporter
     docker:
       - image: cimg/node:17.2.0
     steps:
+      - checkout
       - node/install-packages:
           pkg-manager: npm
       - run:
