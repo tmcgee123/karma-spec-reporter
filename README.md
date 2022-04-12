@@ -1,6 +1,6 @@
 # karma-spec-reporter
 
-[![Join the chat at https://gitter.im/mlex/karma-spec-reporter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mlex/karma-spec-reporter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/mlex/karma-spec-reporter.svg)](https://travis-ci.org/mlex/karma-spec-reporter)
+[![Join the chat at https://gitter.im/mlex/karma-spec-reporter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/mlex/karma-spec-reporter?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![CircleCI](https://circleci.com/gh/tmcgee123/karma-spec-reporter/tree/master.svg?style=svg)](https://circleci.com/gh/tmcgee123/karma-spec-reporter/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/tmcgee123/karma-spec-reporter/badge.svg?branch=master)](https://coveralls.io/github/tmcgee123/karma-spec-reporter?branch=master)
 
 Test reporter, that prints detailed results to console (similar to mocha's spec reporter).
