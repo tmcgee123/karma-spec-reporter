@@ -142,7 +142,7 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
       var browserName = reporterCfg.showBrowser ? ' [' + browser.name + ']' : '';
       var elapsedTime = reporterCfg.showSpecTiming ? ' (' + result.time + 'ms)' : '';
 
-      if (this.reportSlowerThan && result.time > config.reportSlowerThan) {
+      if (config.reportSlowerThan && result.time > config.reportSlowerThan) {
         this.logSlowPoke(result);
       }
 
