@@ -13,9 +13,12 @@ npm install karma-spec-reporter --save-dev
 ```
 This will download the karma-spec-reporter and add the dependency to `package.json`.
 
-Then add ``'spec'`` to reporters in karma.conf.js, e.g.
+Then require the plugin and add ``'spec'`` to reporters in karma.conf.js, e.g.
 
 ```
+plugins: [
+  require('karma-spec-reporter'),
+],
 reporters: ['spec']
 ```
 
