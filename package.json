@@ -27,7 +27,7 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.4.0",
-    "coveralls": "^2.11.4",
+    "coveralls": "^3.1.1",
     "istanbul": "^0.4.0",
     "mocha": "^9.2.2",
     "mocha-lcov-reporter": "^1.3.0",
