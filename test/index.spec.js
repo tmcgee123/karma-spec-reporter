@@ -271,10 +271,19 @@ describe('SpecReporter', function() {
             showSpecTiming: true
           };
           newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+          newSpecReporter.currentSuite.push('suite name');
+          newSpecReporter.onRunComplete(['testValue'], {
+            disconnected: false,
+            error: false,
+            failed: 0,
+            success: 10
+          });
         });
 
         it('should set the showSpecTiming flag to true', function() {
           newSpecReporter.showSpecTiming.should.equal(true);
+          //NOTE: called with date string here, but lazily matching with the - character instead
+          newSpecReporter.write.should.have.been.calledWith(sinon.match(" - TOTAL: %d SUCCESS\n"), 10);
         });
       });
 
@@ -374,7 +383,7 @@ describe('SpecReporter', function() {
             });
 
             it('should call to write all of the successful specs', function() {
-              newSpecReporter.write.should.have.been.calledWith(undefined, 10);
+              newSpecReporter.write.should.have.been.calledWith("TOTAL: %d SUCCESS\n", 10);
             });
 
             it('should reset failures and currentSuite arrays', function() {
@@ -409,7 +418,7 @@ describe('SpecReporter', function() {
             });
 
             it('should call to write all of the failed and successful specs', function() {
-              newSpecReporter.write.should.have.been.calledWith(undefined, 10, 0);
+              newSpecReporter.write.should.have.been.calledWith("TOTAL: %d FAILED, %d SUCCESS\n", 10);
             });
 
             it('should reset failures and currentSuite arrays', function() {
@@ -442,7 +451,7 @@ describe('SpecReporter', function() {
             });
 
             it('should call to write all of the failed and successful specs', function() {
-              newSpecReporter.write.should.have.been.calledWith(undefined, 10, 0);
+              newSpecReporter.write.should.have.been.calledWith("TOTAL: %d FAILED, %d SUCCESS\n", 10, 0);
             });
 
             it('should reset failures and currentSuite arrays', function() {
