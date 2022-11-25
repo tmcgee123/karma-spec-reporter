@@ -41,13 +41,14 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
     }
 
     if (browsers.length >= 1 && !results.disconnected && !results.error) {
+      var currentTime = reporterCfg.showSpecTiming ? (this.USE_COLORS ? (new Date().toLocaleString() + ' - ').yellow : new Date().toLocaleString() + ' - ') : '';
       if (!results.failed) {
         if (!this.suppressSummary) {
-          this.write(this.TOTAL_SUCCESS, results.success);
+          this.write(currentTime + this.TOTAL_SUCCESS, results.success);
         }
       } else {
         if (!this.suppressSummary) {
-          this.write(this.TOTAL_FAILED, results.failed, results.success);
+          this.write(currentTime + this.TOTAL_FAILED, results.failed, results.success);
         }
         if (!this.suppressErrorSummary) {
           this.logFinalErrors(this.failures);
