@@ -15,8 +15,18 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
     }, reporterCfg.prefixes);
 
   this.failures = [];
-  this.USE_COLORS = false;
   this.slowPokes = [];
+
+  this.USE_COLORS = false;
+  this.SPEC_FAILURE = '%s %s FAILED\n';
+  this.SPEC_SLOW = '%s SLOW %s: %s\n';
+  this.ERROR = '%s ERROR\n';
+  this.FINISHED_ERROR = ' ERROR';
+  this.FINISHED_SUCCESS = ' SUCCESS';
+  this.FINISHED_DISCONNECTED = ' DISCONNECTED';
+  this.X_FAILED = ' (%d FAILED)';
+  this.TOTAL_SUCCESS = 'TOTAL: %d SUCCESS\n';
+  this.TOTAL_FAILED = 'TOTAL: %d FAILED, %d SUCCESS\n';
 
   // colorize output of BaseReporter functions
   if (config.colors) {
@@ -41,7 +51,9 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
     }
 
     if (browsers.length >= 1 && !results.disconnected && !results.error) {
-      var currentTime = reporterCfg.showSpecTiming ? (this.USE_COLORS ? (new Date().toLocaleString() + ' - ').yellow : new Date().toLocaleString() + ' - ') : '';
+      var currentTime = reporterCfg.showSpecTiming ?
+        (this.USE_COLORS ? (new Date().toLocaleString() + ' - ').yellow : (new Date().toLocaleString() + ' - ')) :
+        '';
       if (!results.failed) {
         if (!this.suppressSummary) {
           this.write(currentTime + this.TOTAL_SUCCESS, results.success);
@@ -206,7 +218,7 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
   this.suppressErrorSummary = reporterCfg.suppressErrorSummary || false;
   this.showSpecTiming = reporterCfg.showSpecTiming || false;
   this.showBrowser = reporterCfg.showBrowser || false;
-  this.reportSlowerThan = config.reportSlowerThan || false;
+  this.reportSlowerThan = config.reportSlowerThan || reporterCfg.reportSlowerThan || false;
 };
 
 SpecReporter.$inject = ['baseReporterDecorator', 'formatError', 'config'];
