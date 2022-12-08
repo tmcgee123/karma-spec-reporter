@@ -89,14 +89,20 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
         this.writeCommonMsg('\n');
       }
 
-      this.writeCommonMsg((index + ') ' + failure.description + '\n').red);
-      this.writeCommonMsg((this.WHITESPACE + failure.suite.join(' ') + '\n').red);
+      this.writeCommonMsg(this.USE_COLORS ?
+        (index + ') ' + failure.description + '\n').red :
+        (index + ') ' + failure.description + '\n'));
+        
+      this.writeCommonMsg(this.USE_COLORS ?
+        (this.WHITESPACE + failure.suite.join(' ') + '\n').red :
+        (this.WHITESPACE + failure.suite.join(' ') + '\n'));
       failure.log.forEach(function (log) {
         if (reporterCfg.maxLogLines) {
           log = log.split('\n').slice(0, reporterCfg.maxLogLines).join('\n');
         }
-        this.writeCommonMsg(this.WHITESPACE + formatError(log)
-            .replace(/\\n/g, '\n').grey);
+        this.writeCommonMsg(this.USE_COLORS ?
+          (this.WHITESPACE + formatError(log).replace(/\\n/g, '\n')).grey :
+          (this.WHITESPACE + formatError(log).replace(/\\n/g, '\n')));
       }, this);
     }, this);
 
