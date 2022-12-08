@@ -536,7 +536,7 @@ describe('SpecReporter', function() {
         return result;
       }
 
-      it('should write a single failure out', function() {
+      it('should write a single failure out and colors when colors is true', function() {
         var errors = [
           {
             suite: ['A', 'B'],
@@ -548,15 +548,15 @@ describe('SpecReporter', function() {
           '\n\n',
           '\u001b[31m1) should do stuff\n\u001b[39m',
           '\u001b[31m     A B\n\u001b[39m',
-          '     \u001b[90mThe Error!\u001b[39m',
+          '\u001b[90m     The Error!\u001b[39m',
           '\n'
         ];
-        var specReporter = createSpecReporter();
+        var specReporter = createSpecReporter({colors: true});
         specReporter.logFinalErrors(errors);
         writtenMessages.should.eql(expected);
       });
 
-      it('should truncate messages exceding maxLogLines in length', function() {
+      it('should truncate messages exceding maxLogLines in length and no color when colors is false', function() {
         var errors = [
           {
             suite: ['A', 'B'],
@@ -566,9 +566,9 @@ describe('SpecReporter', function() {
         ];
         var expected = [
           '\n\n',
-          '\u001b[31m1) should do stuff\n\u001b[39m',
-          '\u001b[31m     A B\n\u001b[39m',
-          '     \u001b[90mThe Error!\u001b[39m',
+          '1) should do stuff\n',
+          '     A B\n',
+          '     The Error!',
           '\n'
         ];
         var specReporter = createSpecReporter({
@@ -580,7 +580,7 @@ describe('SpecReporter', function() {
         writtenMessages.should.eql(expected);
       });
 
-      it('should write out multiple failures', function() {
+      it('should write out multiple failures and colors when colors is true', function() {
         var errors = [
           {
             suite: ['A', 'B'],
@@ -597,14 +597,14 @@ describe('SpecReporter', function() {
           '\n\n',
           '\u001b[31m1) should do stuff\n\u001b[39m',
           '\u001b[31m     A B\n\u001b[39m',
-          '     \u001b[90mThe Error!\u001b[39m',
+          '\u001b[90m     The Error!\u001b[39m',
           '\n',
           '\u001b[31m2) should do more stuff\n\u001b[39m',
           '\u001b[31m     C D\n\u001b[39m',
-          '     \u001b[90mAnother error!\u001b[39m',
+          '\u001b[90m     Another error!\u001b[39m',
           '\n'
         ];
-        var specReporter = createSpecReporter();
+        var specReporter = createSpecReporter({colors: true});
         specReporter.logFinalErrors(errors);
         writtenMessages.should.eql(expected);
       });
