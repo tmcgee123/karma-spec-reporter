@@ -1,4 +1,5 @@
-var colors = require('colors');
+var colors = require('colors'),
+    LOG_PRIORITIES = require('karma').constants.LOG_PRIORITIES;
 
 var SpecReporter = function (baseReporterDecorator, formatError, config) {
   baseReporterDecorator(this);
@@ -183,12 +184,16 @@ var SpecReporter = function (baseReporterDecorator, formatError, config) {
 
   this.LOG_SINGLE_BROWSER = '%s LOG: %s\n';
   this.LOG_MULTI_BROWSER = '%s %s LOG: %s\n';
+  var bCfg = config && config.browserConsoleLogOptions || {};
+  var bLogThreshold = LOG_PRIORITIES.indexOf((bCfg && bCfg.level || 'DEBUG').toUpperCase());
   var doLog = config && config.browserConsoleLogOptions && config.browserConsoleLogOptions.terminal;
-  this.onBrowserLog = doLog ? function (browser, log, type) {
+  this.onBrowserLog = bCfg.terminal ? function (browser, log, type) {
+    type = type.toUpperCase();
+    if (LOG_PRIORITIES.indexOf(type) > bLogThreshold) return;
     if (this._browsers && this._browsers.length === 1) {
-      this.write(this.LOG_SINGLE_BROWSER, type.toUpperCase(), this.USE_COLORS ? log.cyan : log);
+      this.write(this.LOG_SINGLE_BROWSER, type, this.USE_COLORS ? log.cyan : log);
     } else {
-      this.write(this.LOG_MULTI_BROWSER, browser, type.toUpperCase(), this.USE_COLORS ? log.cyan : log);
+      this.write(this.LOG_MULTI_BROWSER, browser, type, this.USE_COLORS ? log.cyan : log);
     }
   } : noop;
 

@@ -264,26 +264,52 @@ describe('SpecReporter', function() {
       });
 
       describe('and showSpecTiming is truthy', function() {
-        var newSpecReporter;
-        var config = {};
-        beforeEach(function() {
-          config.specReporter = {
-            showSpecTiming: true
-          };
-          newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
-          newSpecReporter.currentSuite.push('suite name');
-          newSpecReporter.onRunComplete(['testValue'], {
-            disconnected: false,
-            error: false,
-            failed: 0,
-            success: 10
+        describe('and USE_COLORS is false', function(){
+          var newSpecReporter;
+          var config = {};
+          beforeEach(function() {
+            config.specReporter = {
+              showSpecTiming: true
+            };
+            newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+            newSpecReporter.currentSuite.push('suite name');
+            newSpecReporter.onRunComplete(['testValue'], {
+              disconnected: false,
+              error: false,
+              failed: 0,
+              success: 10
+            });
+          });
+
+          it('should set the showSpecTiming flag to true', function() {
+            newSpecReporter.showSpecTiming.should.equal(true);
+            //NOTE: called with date string here, but lazily matching with the - character instead
+            newSpecReporter.write.should.have.been.calledWith(sinon.match(" - TOTAL: %d SUCCESS\n"), 10);
           });
         });
+        describe('and USE_COLORS is true', function(){
+          var newSpecReporter;
+          var config = {colors: true};
+          beforeEach(function() {
+            config.specReporter = {
+              showSpecTiming: true
+            };
+            newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+            newSpecReporter.currentSuite.push('suite name');
+            newSpecReporter.onRunComplete(['testValue'], {
+              disconnected: false,
+              error: false,
+              failed: 0,
+              success: 10
+            });
+          });
 
-        it('should set the showSpecTiming flag to true', function() {
-          newSpecReporter.showSpecTiming.should.equal(true);
-          //NOTE: called with date string here, but lazily matching with the - character instead
-          newSpecReporter.write.should.have.been.calledWith(sinon.match(" - TOTAL: %d SUCCESS\n"), 10);
+          it('should set the showSpecTiming flag to true', function() {
+            newSpecReporter.showSpecTiming.should.equal(true);
+            //NOTE: called with date string here, but lazily matching with the - character instead
+            newSpecReporter.write.should.have.been.calledWith(sinon.match(ansiColors.yellow));
+            newSpecReporter.write.should.have.been.calledWith(sinon.match("TOTAL: %d SUCCESS"), 10);
+          });
         });
       });
 
@@ -398,11 +424,12 @@ describe('SpecReporter', function() {
         });
 
         describe('and there are failures', function() {
-          describe('and suppressErrorSummary is true', function() {
+          describe('and suppressErrorSummary and suppressSummary are true', function() {
             var newSpecReporter;
             var config = {
               specReporter: {
-                suppressErrorSummary: true
+                suppressErrorSummary: true,
+                suppressSummary: true
               }
             };
             beforeEach(function() {
@@ -418,7 +445,7 @@ describe('SpecReporter', function() {
             });
 
             it('should call to write all of the failed and successful specs', function() {
-              newSpecReporter.write.should.have.been.calledWith("TOTAL: %d FAILED, %d SUCCESS\n", 10);
+              newSpecReporter.write.should.not.have.been.calledWith("TOTAL: %d FAILED, %d SUCCESS\n", 10);
             });
 
             it('should reset failures and currentSuite arrays', function() {
@@ -427,7 +454,7 @@ describe('SpecReporter', function() {
             });
 
             it('should call writeCommonMsg', function() {
-              newSpecReporter.writeCommonMsg.should.have.been.called;
+              newSpecReporter.writeCommonMsg.should.not.have.been.called;
             });
 
             it('should not call to log the final errors', function() {
@@ -437,7 +464,7 @@ describe('SpecReporter', function() {
 
           describe('and suppressErrorSummary is false', function() {
             var newSpecReporter;
-            var config = {};
+            var config = {specReporter: {}};
             beforeEach(function() {
               newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
               newSpecReporter.logFinalErrors = sinon.spy();
@@ -710,6 +737,40 @@ describe('SpecReporter', function() {
           }).to.throw(Error, /failFast/);
         });
       });
+      describe('without FAIL_FAST option', function() {
+        var newSpecReporter;
+        var config = {};
+        beforeEach(function() {
+          config.specReporter = {};
+          newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+        });
+        it('should throw an error', function() {
+          expect(function() {
+            newSpecReporter.onSpecFailure([], {
+              suite: [],
+              log: []
+            });
+          }).not.to.throw(Error, /failFast/);
+        });
+      });
+      describe('without colors is true', function() {
+        var newSpecReporter;
+        var config = {colors: true};
+        beforeEach(function() {
+          config.specReporter = {};
+          newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+          newSpecReporter.writeSpecMessage = sinon.spy();
+        });
+        it('should throw an error and write message in color', function() {
+          expect(function() {
+            newSpecReporter.onSpecFailure([], {
+              suite: [],
+              log: []
+            });
+          }).not.to.throw(Error, /failFast/);
+          newSpecReporter.writeSpecMessage.should.have.been.calledWith(sinon.match(ansiColors.red));
+        });
+      });
     });
 
     describe('logSlowPoke', function() {
@@ -720,6 +781,50 @@ describe('SpecReporter', function() {
       });
       it('should append the slow test', function() {
         expect(newSpecReporter.slowPokes[0].id).to.equal(1);
+      });
+    });
+
+    describe('onBrowserLog', function(){
+      describe('when browserConsoleLogOptions has terminal set', function() {
+        describe('outside of threshold', function() {
+          var newSpecReporter;
+          var config = {browserConsoleLogOptions: {terminal: true, level: 'ERROR'}};
+          beforeEach(function() {
+            config.specReporter = {};
+            newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+            newSpecReporter._browsers = ['one'];
+            newSpecReporter.onBrowserLog('browser', 'debug', 'debug')
+          });
+          it('should not call to write result', function() {
+            newSpecReporter.write.should.not.have.been.called;
+          });
+        });
+        describe('with one browser', function() {
+          var newSpecReporter;
+          var config = {browserConsoleLogOptions: {terminal: true}};
+          beforeEach(function() {
+            config.specReporter = {};
+            newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+            newSpecReporter._browsers = ['one'];
+            newSpecReporter.onBrowserLog('browser', 'debug', 'debug')
+          });
+          it('should call to write result', function() {
+            newSpecReporter.write.should.have.been.calledWith('%s LOG: %s\n', 'DEBUG', 'debug');
+          });
+        });
+        describe('with multiple browser', function() {
+          var newSpecReporter;
+          var config = {browserConsoleLogOptions: {terminal: true}};
+          beforeEach(function() {
+            config.specReporter = {};
+            newSpecReporter = new SpecReporter[1](baseReporterDecorator, formatError, config);
+            newSpecReporter._browsers = ['one', 'two'];
+            newSpecReporter.onBrowserLog('browser' ,'debug', 'debug')
+          });
+          it('should call to write result', function() {
+            newSpecReporter.write.should.have.been.calledWith('%s %s LOG: %s\n', 'browser', 'DEBUG', 'debug');
+          });
+        });
       });
     });
   });
