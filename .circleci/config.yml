@@ -7,10 +7,10 @@ orbs:
   node: circleci/node@5.0.2
 
 jobs:
-  node17:
+  node20:
     working_directory: ~/karma-spec-reporter
     docker:
-      - image: cimg/node:17.2.0
+      - image: cimg/node:20.18
     steps:
       - checkout
       - node/install-packages:
@@ -24,4 +24,4 @@ workflows:
   test: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - node17
+      - node20
