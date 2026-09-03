@@ -7,10 +7,25 @@ orbs:
   node: circleci/node@5.0.2
 
 jobs:
-  node17:
+  test:
+    parameters:
+      node-version:
+        type: string
     working_directory: ~/karma-spec-reporter
     docker:
-      - image: cimg/node:17.2.0
+      - image: cimg/node:<< parameters.node-version >>
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          command: npm test
+          name: Run tests
+
+  coverage:
+    working_directory: ~/karma-spec-reporter
+    docker:
+      - image: cimg/node:22.17
     steps:
       - checkout
       - node/install-packages:
@@ -24,4 +39,8 @@ workflows:
   test: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - node17
+      - test:
+          matrix:
+            parameters:
+              node-version: ["20.19", "22.17"]
+      - coverage
