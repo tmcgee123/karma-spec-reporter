@@ -34,5 +34,9 @@
   },
   "files": [
     "index.js"
-  ]
+  ],
+  "overrides": {
+    "js-yaml": "4.3.2",
+    "qs": "6.16.0"
+  }
 }
